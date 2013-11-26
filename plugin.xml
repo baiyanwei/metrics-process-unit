@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="process_unit_http"
+         point="com.secpro.platform.api.pf_api_server">
+      <server
+            description="mca_http interface"
+            id="mca:http:8090"
+            implement_class="com.secpro.platform.monitoring.process.http.ProcessUnitHttpServer"
+            name="mca:http:8090">
+         <property
+               name="port"
+               value="8090">
+         </property>
+         <handler
+               description="mca http handler"
+               id="mca.http.handler"
+               implement_class="com.secpro.platform.monitoring.process.http.mca.MCAHttpRequstHandler"
+               name="mca_http_handler">
+            <property
+                  name="path"
+                  value="/pushdata">
+            </property>
+         </handler>
+         <handler
+               description="watchdog http handler"
+               id="watchdog.http.handler"
+               implement_class="com.secpro.platform.monitoring.process.http.watchdog.WatchDogHttpRequestHandler"
+               name="watchdog_http_handler">
+            <property
+                  name="path"
+                  value="/watchdog">
+            </property>
+         </handler>
+      </server>
+   </extension>
+
+</plugin>
