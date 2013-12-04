@@ -201,7 +201,7 @@ public class ProcessChainService implements IService{
 	 * @param dataObj
 	 * @throws Exception
 	 */
-	public void dataProcess(Object dataObj) throws Exception{
+	public void watchdogDataProcess(Object dataObj) throws Exception{
 		if(dataObj==null)
 		{
 			theLogger.error("the metadata is empty,do nothing!");

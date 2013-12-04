@@ -56,33 +56,38 @@ public class SyslogStandardRuleService implements IService{
 	 * 加载typeCode对应的syslog标准化规则
 	 * @param typeCode
 	 */
-	public void loadStandardRule(String typeCode){
+	public boolean loadStandardRule(String typeCode){
 		if (Assert.isEmptyString(typeCode)) {
-			return;
+			return false;
 		}
 		ISyslogDao syslogDao=new SyslogDao();
 		Map<String,Map<String,String>> ruleNameMapping=syslogDao.syslogRuleMappingQuery(typeCode);
+		if(ruleNameMapping==null||ruleNameMapping.size()==0){
+			return false;
+		}
 		synchronized(_ruleMapping){ 
 			_ruleMapping.put(typeCode, ruleNameMapping);
+			return true;
 		}
 	}
 	/**
 	 * 修改typeCode对应的syslog标准化规则
 	 * @param typeCode
 	 */
-	public void changedStandarRule(String typeCode){
-		loadStandardRule(typeCode);
+	public boolean changedStandarRule(String typeCode){
+		return loadStandardRule(typeCode);
 	}
 	/**
 	 * 删除typeCode对应的syslog标准化规则
 	 * @param typeCode
 	 */
-	public void removeStandarRule(String typeCode){
+	public boolean removeStandardRule(String typeCode){
 		if (Assert.isEmptyString(typeCode)) {
-			return;
+			return false;
 		}
 		synchronized(_ruleMapping){ 
 			_ruleMapping.remove(typeCode);
+			return true;
 		}
 	}
 	/**
@@ -94,6 +99,21 @@ public class SyslogStandardRuleService implements IService{
 			syslogDao.syslogDBMappingQuery(_dataDBMapping);
 		}
 	}
-	
+	public boolean reloadStandardRule(String typeCode,String oper){
+		if(Assert.isEmptyString(typeCode)||Assert.isEmptyString(oper)){
+			return false;
+		}
+		if("0".equals(oper)){
+			theLogger.info("loadStandardRule",typeCode);
+			return loadStandardRule(typeCode);
+		}else if("1".equals(oper)){
+			theLogger.info("changeStandardRule",typeCode);
+			return changedStandarRule(typeCode);
+		}else if("2".equals(oper)){
+			theLogger.info("removeStandardRule",typeCode);
+			return removeStandardRule(typeCode);
+		}
+		return false;
+	}
 
 }

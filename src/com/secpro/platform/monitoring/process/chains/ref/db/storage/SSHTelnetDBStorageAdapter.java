@@ -10,7 +10,7 @@ import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataConstant;
 import com.secpro.platform.monitoring.process.dao.IConfigAndPolicyDao;
 import com.secpro.platform.monitoring.process.dao.impl.ConfigAndPolicyDao;
 import com.secpro.platform.monitoring.process.entity.ConfigAndPolicyBean;
-import com.secpro.platform.monitoring.process.utils.DateFormat;
+import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
 /**
  * ssh、telnet类型数据存储
  * @author sxf
@@ -41,7 +41,7 @@ public class SSHTelnetDBStorageAdapter extends DBStorage{
 		}
 		long resID=(Long) sshOrTelnetData.get("resID");
 		String taskCode=(String) sshOrTelnetData.get(MetaDataConstant.TASK_CODE);
-		String cdate=DateFormat.getNowDate();
+		String cdate=DateFormatUtil.getNowDate();
 		StringBuilder configAndPolicyInfo=new StringBuilder();
 		if(Assert.isEmptyString(executeResult[0])){
 			configAndPolicyInfo.append("#configuration##configuration#");

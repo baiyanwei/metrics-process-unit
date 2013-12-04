@@ -170,5 +170,30 @@ public class KpiDao implements IKpiDao{
 		return null;
 	}
 
+	@Override
+	public Map<Long, String> kpiLastDateQuery() {
+		Connection conn = DBUtil.getConnection();
+		Statement statement = null;
+		ResultSet result=null;
+		try {
+			statement = conn.createStatement();
+			String sql = "select t1.id,max(t2.cdate) from sys_res_obj t1,raw_kpi t2,sys_res_class t3 where t3.class_name='mca' and t1.class_id=t3.id and t1.id=t2.res_id(+) group by t1.id";
+			result=statement.executeQuery(sql);
+			Map<Long,String> kpiLastDate=new HashMap<Long,String>();
+			while(result.next()){
+				kpiLastDate.put(result.getLong(1), result.getString(2));
+
+			}
+			return kpiLastDate;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			theLogger.exception(e);
+		} finally {
+			DBUtil.closeConnection(conn, statement,result);
+		}
+		return null;
+		}
+
 
 }

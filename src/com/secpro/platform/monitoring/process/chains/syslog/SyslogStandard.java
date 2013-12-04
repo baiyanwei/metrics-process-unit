@@ -27,7 +27,8 @@ public class SyslogStandard implements IDataProcessChain {
 	private static PlatformLogger theLogger = PlatformLogger
 			.getLogger(SyslogStandard.class);
 	private int chainID = 0;
-	private static final String DATE_PROPERTY_NAME="date";
+	//时间标准化对应名称
+	private final String DATE_PROPERTY_NAME="date";
 
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {

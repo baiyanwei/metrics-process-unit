@@ -19,8 +19,10 @@ import com.secpro.platform.monitoring.process.dao.impl.KpiDao;
 public class SNMPEvent implements IDataProcessChain{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(SNMPStorage.class);
 	private int chainID=0;
-	private static final String TIMEOUT="timeout";
-	private static final String NOSUCHOBJECT="nosuchobject";
+	//超时事件名称
+	private final String TIMEOUT="timeout";
+	//SNMP采集没有此对象事件名称
+	private final String NOSUCHOBJECT="nosuchobject";
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {
 		theLogger.debug("snmp dataProcess chain ID: "+getChainID());

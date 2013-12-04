@@ -13,7 +13,7 @@ import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataConstant;
 import com.secpro.platform.monitoring.process.dao.IKpiDao;
 import com.secpro.platform.monitoring.process.dao.impl.KpiDao;
 import com.secpro.platform.monitoring.process.entity.KpiBean;
-import com.secpro.platform.monitoring.process.utils.DateFormat;
+import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
 /**
  * watchdog类型数据存储
  * @author sxf
@@ -43,7 +43,7 @@ public class WatchDogDBStorgeAdapter extends DBStorage{
 			return;
 		}
 		long resID=(Long) watchdogData.get("resID");
-		String cdate=DateFormat.getNowDate();
+		String cdate=DateFormatUtil.getNowDate();
 		Set<String> resultKeys=executeResult.keySet();
 		List<KpiBean> storeList=new ArrayList<KpiBean>();
 		for(String resultKey:resultKeys){

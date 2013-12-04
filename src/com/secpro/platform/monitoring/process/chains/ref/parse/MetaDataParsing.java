@@ -12,7 +12,7 @@ import org.json.JSONTokener;
 
 import com.secpro.platform.core.utils.Assert;
 import com.secpro.platform.log.utils.PlatformLogger;
-import com.secpro.platform.monitoring.process.utils.DateFormat;
+import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
 
 /**
  * 将各种类型的json格式数据，解析成数据处理所需要的属性
@@ -109,21 +109,51 @@ public class MetaDataParsing {
 
 		try {
 			Map<String, Object> reletedData = new HashMap<String, Object>();
-			Long timestamp = data.getLong(MetaDataConstant.META_TIMESTAMP_PROPERTY_NAME);
 			reletedData
-					.put(MetaDataConstant.EXECUTE_DATE, DateFormat.timestampFormat(timestamp));
+					.put(MetaDataConstant.EXECUTE_DATE,data.getString(MetaDataConstant.META_EXECUTE_AT_PROPERTY_NAME));
 			reletedData.put(MetaDataConstant.CITY_CODE,
 					data.getString(MetaDataConstant.META_CITYCODE_PROPERTY_NAME));
+			reletedData.put(MetaDataConstant.TASK_CODE,
+					data.getString(MetaDataConstant.META_MONITOR_ID_PROPERTY_NAME));
+			reletedData.put(MetaDataConstant.TARGET_IP,
+					data.getString(MetaDataConstant.META_TARGETIP_PROPERTY_NAME));
+			reletedData.put(MetaDataConstant.EXECUTE_COST,
+					data.getString(MetaDataConstant.META_EXECUTE_COST_PROPERTY_NAME));
 			String metaBody = data.getString(MetaDataConstant.META_BODY_PROPERTY_NAME);
 			JSONObject metaBodyJson = new JSONObject(metaBody);
 			String content = metaBodyJson.getString(dataType);
 			JSONObject contentJson = new JSONObject(content);
-			reletedData.put(MetaDataConstant.TASK_CODE,
-					contentJson.getString(MetaDataConstant.META_MID_PROPERTY_NAME));
-			reletedData.put(MetaDataConstant.TARGET_IP,
-					contentJson.getString(MetaDataConstant.META_TARGETIP_PROPERTY_NAME));
 			reletedData.put(MetaDataConstant.EXECUTE_RESULT,
 					contentJson.getString(MetaDataConstant.META_RESULT_PROPERTY_NAME));
+			return reletedData;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			theLogger.exception(e);
+		}
+		return null;
+	}
+	public static Map<String,Object> getErrorRelatedData(JSONObject data){
+		if (data == null) {
+			return null;
+		}
+
+		try {
+			Map<String, Object> reletedData = new HashMap<String, Object>();
+			reletedData
+					.put(MetaDataConstant.EXECUTE_DATE,data.getString(MetaDataConstant.META_EXECUTE_AT_PROPERTY_NAME));
+			reletedData.put(MetaDataConstant.CITY_CODE,
+					data.getString(MetaDataConstant.META_CITYCODE_PROPERTY_NAME));
+			reletedData.put(MetaDataConstant.TASK_CODE,
+					data.getString(MetaDataConstant.META_MONITOR_ID_PROPERTY_NAME));
+			reletedData.put(MetaDataConstant.TARGET_IP,
+					data.getString(MetaDataConstant.META_TARGETIP_PROPERTY_NAME));
+			reletedData.put(MetaDataConstant.EXECUTE_COST,
+					data.getString(MetaDataConstant.META_EXECUTE_COST_PROPERTY_NAME));
+			String metaBody = data.getString(MetaDataConstant.META_BODY_PROPERTY_NAME);
+			JSONObject metaBodyJson = new JSONObject(metaBody);
+			String content = metaBodyJson.getString("error");
+			reletedData.put(MetaDataConstant.ERROR_DESCRIPTION,content);
 			return reletedData;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -224,18 +254,18 @@ public class MetaDataParsing {
 								.getJSONObject("syslog");
 						if (syslogJsonObj != null) {
 							reletedData.put(MetaDataConstant.TARGET_IP, syslogJsonObj
-									.getString(MetaDataConstant.META_TARGETIP_PROPERTY_NAME));
+									.getString(MetaDataConstant.META_SYSLOG_TARGETIP_PROPERTY_NAME));
 							reletedData
 									.put(MetaDataConstant.EXECUTE_DATE,
 											syslogJsonObj
-													.getString(MetaDataConstant.META_RECEIVE_DATA_PROPERTY_NAME));
+													.getString(MetaDataConstant.META_SYSLOG_RECEIVE_DATA_PROPERTY_NAME));
 							reletedData
 									.put(MetaDataConstant.EXECUTE_RESULT,
 											jsonObjectToMap(syslogJsonObj
 													.getJSONObject(MetaDataConstant.META_EXECUTECOMMAND_PROPERTY_NAME)));
-							if (syslogJsonObj.has(MetaDataConstant.META_ORIGIN_PROPERTY_NAME)) {
+							if (syslogJsonObj.has(MetaDataConstant.META_SYSLOG_ORIGIN_PROPERTY_NAME)) {
 								reletedData.put(MetaDataConstant.ORIGIN_SYSLOG, syslogJsonObj
-										.getString(MetaDataConstant.META_ORIGIN_PROPERTY_NAME));
+										.getString(MetaDataConstant.META_SYSLOG_ORIGIN_PROPERTY_NAME));
 							}
 						}
 					}

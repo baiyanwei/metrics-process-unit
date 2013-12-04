@@ -16,7 +16,7 @@ import com.secpro.platform.monitoring.process.dao.impl.BaselineDao;
 import com.secpro.platform.monitoring.process.entity.BaselineBean;
 import com.secpro.platform.monitoring.process.entity.BaselineMatchBean;
 import com.secpro.platform.monitoring.process.entity.BaselineMatchScoreBean;
-import com.secpro.platform.monitoring.process.utils.DateFormat;
+import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
 /**
  * 基线比对
  * telnet采集回来的策略以及配置信息根据基线比对规则，与基线进行比对，并将比对结果存入数据库
@@ -27,12 +27,18 @@ import com.secpro.platform.monitoring.process.utils.DateFormat;
 public class TelnetMatchBaseline implements IDataProcessChain{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(TelnetMatchBaseline.class);
 	private int chainID=0;
-	private static final String MATCH_SUCCESS="1";
-	private static final String MATCH_FAILED="0";
-	private static final String CONFIG_BASELINE="0";
-	private static final String POLICY_BASELINE="1";
-	private static final String BASELINE_SCORE_NAME="baseline score";
-	private static final String BASELINE_MATCH_NAME="baseline match";
+	//基线比对成功
+	private final String MATCH_SUCCESS="1";
+	//基线比对失败
+	private final String MATCH_FAILED="0";
+	//配置基线
+	private final String CONFIG_BASELINE="0";
+	//策略基线
+	private final String POLICY_BASELINE="1";
+	//基线比对分数事件名称
+	private final String BASELINE_SCORE_NAME="baseline score";
+	//基线比对结果事件名称
+	private final String BASELINE_MATCH_NAME="baseline match";
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {
 		theLogger.debug("telnet dataProcess chain ID: "+getChainID());
@@ -56,7 +62,7 @@ public class TelnetMatchBaseline implements IDataProcessChain{
 			theLogger.debug("This model does not set the baseline");
 		}else {
 			List<BaselineMatchBean> matchValues=new ArrayList<BaselineMatchBean>();
-			String cdate=DateFormat.getNowDate();
+			String cdate=DateFormatUtil.getNowDate();
 			String taskCode=(String) telnetData.get(MetaDataConstant.TASK_CODE);
 			String[] executeResult=(String[]) telnetData.get(MetaDataConstant.EXECUTE_RESULT);
 			int totalScore=0;

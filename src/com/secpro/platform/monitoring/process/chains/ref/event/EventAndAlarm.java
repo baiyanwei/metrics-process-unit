@@ -24,7 +24,7 @@ import com.secpro.platform.monitoring.process.entity.AlarmBean;
 import com.secpro.platform.monitoring.process.entity.EventBean;
 import com.secpro.platform.monitoring.process.entity.EventRuleBean;
 import com.secpro.platform.monitoring.process.entity.UserInfoBean;
-import com.secpro.platform.monitoring.process.utils.DateFormat;
+import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
 /**
  * 事件以及告警产生以及恢复等相关处理
  * @author sxf
@@ -66,8 +66,8 @@ public class EventAndAlarm {
 		//在生成事件信息时，支持加入以下表中的任一字段
 		if(tableMapping!=null){
 			tableMapping.put("event_type", "com.secpro.platform.monitoring.process.dao.impl.EventTypeDao");
-			tableMapping.put("sys_event_rule", "com.secpro.platform.monitoring.process.dao.impl.EventReferenceDao");
-			tableMapping.put("sys_res_obj", "com.secpro.platform.monitoring.process.dao.impl.ResReferenceDao");
+			tableMapping.put("sys_event_rule", "com.secpro.platform.monitoring.process.dao.impl.EventDao");
+			tableMapping.put("sys_res_obj", "com.secpro.platform.monitoring.process.dao.impl.ResDao");
 			tableMapping.put("sys_dev_type", "com.secpro.platform.monitoring.process.dao.impl.DeviceDao");
 			tableMapping.put("sys_dev_company", "com.secpro.platform.monitoring.process.dao.impl.CompanyDao");
 			tableMapping.put("sys_city", "com.secpro.platform.monitoring.process.dao.impl.CityDao");
@@ -201,7 +201,7 @@ public class EventAndAlarm {
 					if(eventLevel==occurredEventLevel){
 						String message=getEventMessage(resID,eventRuleBean,value);
 						theLogger.debug("this event level equal occurred event level");
-						String cdate=DateFormat.getNowDate();
+						String cdate=DateFormatUtil.getNowDate();
 						changeEvent(eventBean.getId(),message,cdate,eventLevel);
 						eventBean.setMessage(message);
 						eventBean.setCdate(cdate);
@@ -214,7 +214,7 @@ public class EventAndAlarm {
 						//如果事件级别与已产生事件级别不同，则更新已产生事件的相应信息
 						theLogger.debug("this event level higher or lower than occurred event level");
 						String message=getEventMessage(resID,eventRuleBean,value);
-						String cdate=DateFormat.getNowDate();
+						String cdate=DateFormatUtil.getNowDate();
 						changeEvent(eventBean.getId(),message,cdate,eventLevel);
 						eventBean.setMessage(message);
 						eventBean.setCdate(cdate);
@@ -252,7 +252,7 @@ public class EventAndAlarm {
 		String message=getEventMessage(resID,eventRuleBean,value);
 		eventBean.setEventLevel(eventRuleBean.getEnentLevel());
 		eventBean.setMessage(message);
-		eventBean.setCdate(DateFormat.getNowDate());
+		eventBean.setCdate(DateFormatUtil.getNowDate());
 		eventBean.setResID(resID);
 		eventBean.setEventTypeID(eventRuleBean.getEventTypeID());
 		IEventDao eventDao=new EventDao();
@@ -283,7 +283,7 @@ public class EventAndAlarm {
 			return;
 		}
 		List<AlarmBean> alarms=new ArrayList<AlarmBean>();
-		String cdate=DateFormat.getNowDate();
+		String cdate=DateFormatUtil.getNowDate();
 		for(UserInfoBean user:users){
 			//如果此用户账户为停用状态，则不会为该用户产生短信告警
 			if(!ENABLE_ACCOUNT.equals(user.getEnableAccount())){
@@ -525,10 +525,10 @@ public class EventAndAlarm {
 		}
 		if(Assert.isEmptyString(eventBean.getConfirmUser())||Assert.isEmptyString(eventBean.getConfirmDate())){
 			eventBean.setConfirmUser(SYSTEM_AUTO);
-			eventBean.setConfirmDate(DateFormat.getNowDate());
+			eventBean.setConfirmDate(DateFormatUtil.getNowDate());
 		}
 		eventBean.setClearUser(SYSTEM_AUTO);
-		eventBean.setClearDate(DateFormat.getNowDate());
+		eventBean.setClearDate(DateFormatUtil.getNowDate());
 		IEventDao eventDao=new EventDao();
 		eventDao.eventHisDeleteAndSave(eventBean);
 		if(recoverSendMsg==false||eventRuleID==0){

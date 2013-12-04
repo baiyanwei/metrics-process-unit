@@ -25,6 +25,8 @@ public class ConfigAndPolicyStandard {
 	private String configRules;
 	private String policyRules;
 	private Map<String,String> predefinedService;
+	private List<String> allRule=new ArrayList<String>();
+	//规则分隔符，以及标准化结果行分隔符
 	private final String splitter="%%";
 	public ConfigAndPolicyStandard(String values,String rules,String cityCode,String targetIP){
 		this.values=values;
@@ -52,6 +54,20 @@ public class ConfigAndPolicyStandard {
 		mat = pattern.matcher(standardRules);
 		if (mat.find()) {
 		 policyRules=mat.group(1);
+		 }
+		String allRuleRegex="#allRule#(.*?)#allRule#";
+		pattern = Pattern.compile(allRuleRegex);
+		mat = pattern.matcher(standardRules);
+		if (mat.find()) {
+			String allRules=mat.group(1);
+			if(!Assert.isEmptyString(allRules)){
+				String[] oneAllRule=allRules.split(splitter);
+				for(int i=0;i<oneAllRule.length;i++){
+					if(!Assert.isEmptyString(oneAllRule[i])){
+						this.allRule.add(oneAllRule[i]);
+					}
+				}
+			}
 		 }
 		//得到初始化参数
 		String initRegex="#init#(.*?)#init#";
@@ -291,7 +307,7 @@ public class ConfigAndPolicyStandard {
 				if(isSaveName){
 					result.append(name+"=(");	
 					if(null==value||"any".equals(value.trim().toLowerCase())){
-						if(StandardConstant.SRC_IP_NAME.equals(name)||StandardConstant.DST_IP_NAME.equals(name)||StandardConstant.SERVICE_NAME.equals(name)){
+						if(allRule.contains(name)){
 							result.append("any");
 						}else if(value!=null){
 							result.append(value);
@@ -1103,6 +1119,9 @@ public class ConfigAndPolicyStandard {
 		for(int i=0;i<configRulesArr.length;i++){
 			if(Assert.isEmptyString(configRulesArr[i])){
 				continue;
+			}
+			if(StandardConstant.CONFIG_SAVE_ALL_VALUES.equals(configRulesArr[i])){
+				return values;
 			}
 			String actionType=StandardUtil.isCustomActionType(configRulesArr[i]);
 			if(actionType==null){

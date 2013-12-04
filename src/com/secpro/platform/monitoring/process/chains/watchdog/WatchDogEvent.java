@@ -17,7 +17,7 @@ import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataConstant;
 public class WatchDogEvent implements IDataProcessChain{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(WatchDogEvent.class);
 	private int chainID=0;
-	private static final String DISK_SPECIAL="disk usage";
+	//private static final String DISK_SPECIAL="disk usage";
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {
 		theLogger.debug("watchdog dataProcess chain ID: "+getChainID());

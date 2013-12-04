@@ -35,15 +35,15 @@ public class SSHStandard implements IDataProcessChain{
 			return null;
 		}
 		Map sshData=(Map)rawData;
-		String taskCode=(String)sshData.get(MetaDataConstant.TASK_CODE);
-		if(Assert.isEmptyString(taskCode))
-		{
-			theLogger.error("invalid taskCode in SSH data processing.");
-			return null;
-		}
-		String executeDate=(String)sshData.get(MetaDataConstant.EXECUTE_DATE);
+//		String taskCode=(String)sshData.get(MetaDataConstant.TASK_CODE);
+//		if(Assert.isEmptyString(taskCode))
+//		{
+//			theLogger.error("invalid taskCode in SSH data processing.");
+//			return null;
+//		}
+//		String executeDate=(String)sshData.get(MetaDataConstant.EXECUTE_DATE);
 		//更新任务状态
-		setTaskStatus(taskCode,executeDate);
+		setTaskStatus(sshData,TaskCompleted.TASK_SUCCESS);
 		String cityCode=(String) sshData.get(MetaDataConstant.CITY_CODE);
 		String targetIP=(String) sshData.get(MetaDataConstant.TARGET_IP);
 		if(Assert.isEmptyString(cityCode)||Assert.isEmptyString(targetIP)){
@@ -99,8 +99,8 @@ public class SSHStandard implements IDataProcessChain{
 	 * @param taskCode
 	 * @param executeDate
 	 */
-	private void setTaskStatus(String taskCode,String executeDate){
-		Thread setTaskStatus=new TaskCompleted(taskCode,executeDate);
+	private void setTaskStatus(Map<String,Object> data,int executeResult) {
+		Thread setTaskStatus = new TaskCompleted(data, executeResult);
 		setTaskStatus.start();
 	}
 

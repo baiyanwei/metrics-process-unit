@@ -19,7 +19,7 @@ import com.secpro.platform.monitoring.process.dao.impl.SyslogDao;
 import com.secpro.platform.monitoring.process.entity.SyslogBean;
 import com.secpro.platform.monitoring.process.services.SyslogStandardRuleService;
 import com.secpro.platform.monitoring.process.utils.CollectionUtil;
-import com.secpro.platform.monitoring.process.utils.DateFormat;
+import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
 /**
  * 数据存储
  * 根据syslog数据库映射规则，将syslog标准化后的数据存入数据库
@@ -30,7 +30,8 @@ public class SyslogStorage implements IDataProcessChain{
 	private static PlatformLogger theLogger = PlatformLogger
 			.getLogger(SyslogStorage.class);
 	private int chainID=0; 
-	private static final String nameFormat="this is {0} syslog";
+	//syslog中name字段格式
+	private final String nameFormat="this is {0} syslog";
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {
 		theLogger.debug("syslog dataProcess chain ID: " + getChainID());
@@ -83,14 +84,14 @@ public class SyslogStorage implements IDataProcessChain{
 			Map<String,String> resultMapping=(Map<String,String>)syslogData.get(MetaDataConstant.EXECUTE_RESULT);
 			String rdate=(String)syslogData.get(MetaDataConstant.EXECUTE_DATE);
 			if(Assert.isEmptyString(rdate)){
-				rdate=DateFormat.getNowDate();
+				rdate=DateFormatUtil.getNowDate();
 			}
 			SyslogBean syslogBean=new SyslogBean();
 			syslogBean.setResID(resID);
 			syslogBean.setResultMapping(resultMapping);
 			syslogBean.setRdate(rdate);
 			syslogBean.setOriSyslog((String) syslogData.get(MetaDataConstant.ORIGIN_SYSLOG));
-			syslogBean.setEdate(DateFormat.getNowDate());
+			syslogBean.setEdate(DateFormatUtil.getNowDate());
 			syslogBean.setSyslogName(MessageFormat.format(nameFormat, typeDes));
 			syslogBeanList.add(0,syslogBean);
 			//System.out.println(syslogBean.getEdate()+syslogBean.getRdate()+syslogBean.getOriSyslog()+syslogBean.getResID()+syslogBean.getSyslogName());

@@ -41,4 +41,5 @@ public interface IKpiDao {
 	 * @return
 	 */
 	public String kpiNameQuery(long kpiID);
+	public Map<Long,String> kpiLastDateQuery();
 }

@@ -12,8 +12,8 @@ import com.secpro.platform.core.services.IService;
 import com.secpro.platform.core.services.ServiceInfo;
 import com.secpro.platform.core.utils.Assert;
 import com.secpro.platform.log.utils.PlatformLogger;
-import com.secpro.platform.monitoring.process.utils.DateFormat;
-@ServiceInfo(description = "process unit chain service", configurationPath = "dpu/services/FileStorageService/")
+import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
+@ServiceInfo(description = "process unit file storage service", configurationPath = "dpu/services/FileStorageService/")
 public class FileStorageService implements IService{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(FileStorageService.class);
 	@XmlElement(name = "fileStoragePath", defaultValue ="")
@@ -73,9 +73,9 @@ public class FileStorageService implements IService{
 
 				int index;
 				if((index=fileStorageName.lastIndexOf("."))==-1){
-					fileName=fileStorageName+DateFormat.getNowDate()+".log";
+					fileName=fileStorageName+DateFormatUtil.getNowDate()+".log";
 				}else{
-					fileName=fileStorageName.substring(0,index)+DateFormat.getNowDate()+fileStorageName.substring(index,fileStorageName.length());
+					fileName=fileStorageName.substring(0,index)+DateFormatUtil.getNowDate()+fileStorageName.substring(index,fileStorageName.length());
 				}
 			}
 		}else{
@@ -84,9 +84,9 @@ public class FileStorageService implements IService{
 			}
 			int index;
 			if((index=fileStorageName.lastIndexOf("."))==-1){
-				fileName=fileStorageName+DateFormat.getNowDate()+".log";
+				fileName=fileStorageName+DateFormatUtil.getNowDate()+".log";
 			}else{
-				fileName=fileStorageName.substring(0,index)+DateFormat.getNowDate()+fileStorageName.substring(index,fileStorageName.length());
+				fileName=fileStorageName.substring(0,index)+DateFormatUtil.getNowDate()+fileStorageName.substring(index,fileStorageName.length());
 			}
 
 			storedSize=0;

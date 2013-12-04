@@ -55,8 +55,8 @@ public class BaselineMatch {
 					if(Assert.isEmptyString(baselineValue)||Assert.isEmptyString(configValue[i])){
 						return null;
 					}
-					if(baselineValue.equals(configValue[i])){
-						return configValue[i];
+					if(baselineValue.equals(configValue[i])||configValue[i].indexOf(baselineValue)>=0){
+						return baselineValue;
 					}
 				}
 			}else if("R".equals(actionType)){
@@ -86,7 +86,7 @@ public class BaselineMatch {
 											match=matchResult(mat.group(1),baselineValueS.substring(0,2),baselineValueS.substring(2,baselineValueS.length()));
 										}else{
 											match=matchResult(mat.group(1),baselineValueS.substring(0,1),baselineValueS.substring(1,baselineValueS.length()));
-											
+
 										}
 										if(match==true){
 											return configValue[i];

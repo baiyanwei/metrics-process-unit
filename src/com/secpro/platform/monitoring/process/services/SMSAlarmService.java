@@ -20,7 +20,7 @@ import com.secpro.platform.monitoring.process.dao.impl.NotifyDao;
 import com.secpro.platform.monitoring.process.entity.AlarmBean;
 import com.secpro.platform.monitoring.process.sms.ISMSAlarm;
 import com.secpro.platform.monitoring.process.utils.CollectionUtil;
-import com.secpro.platform.monitoring.process.utils.DateFormat;
+import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
 @ServiceInfo(description = "process unit SMS alarm service", configurationPath = "dpu/services/SMSAlarmService/")
 public class SMSAlarmService implements IService{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(SMSAlarmService.class);
@@ -87,7 +87,7 @@ public class SMSAlarmService implements IService{
 						String message=alarmB.getMessgae();
 						if(sendMessage(mobleTel,message)){
 							alarmB.setSendMsgStatus(SEND_MSG_SUCCESS);
-							alarmB.setSendDate(DateFormat.getNowDate());
+							alarmB.setSendDate(DateFormatUtil.getNowDate());
 							sendMessageComplete(alarmB);
 							removeAlarm.add(alarmB);
 						}else{
@@ -97,7 +97,7 @@ public class SMSAlarmService implements IService{
 					}
 					if(alarmResendNum>=resendNum){
 						alarmB.setSendMsgStatus(SEND_MSG_FAILED);
-						alarmB.setSendDate(DateFormat.getNowDate());
+						alarmB.setSendDate(DateFormatUtil.getNowDate());
 						sendMessageComplete(alarmB);
 						removeAlarm.add(alarmB);
 					}
@@ -164,12 +164,12 @@ public class SMSAlarmService implements IService{
 				String message=alarmB.getMessgae();
 				if(sendMessage(mobleTel,message)){
 					alarmB.setSendMsgStatus(SEND_MSG_SUCCESS);
-					alarmB.setSendDate(DateFormat.getNowDate());
+					alarmB.setSendDate(DateFormatUtil.getNowDate());
 					sendMessageComplete(alarmB);
 				}else{
 					if(smsAlarmResendThread==null){
 						alarmB.setSendMsgStatus(SEND_MSG_FAILED);
-						alarmB.setSendDate(DateFormat.getNowDate());
+						alarmB.setSendDate(DateFormatUtil.getNowDate());
 						sendMessageComplete(alarmB);
 					}else{
 						storageToResendMessage(alarmB);
@@ -230,7 +230,7 @@ public class SMSAlarmService implements IService{
 		Long start=System.currentTimeMillis();
 		ConfigAndPolicyStandard config=new ConfigAndPolicyStandard(value,rule,"311","127.0.0.1");
 		String[] result=config.configAndPolicyStandard();
-		String[] resultSplit=result[1].split("%%");
+		String[] resultSplit=result[0].split("%%");
 		for(int i=0;i<resultSplit.length;i++){
 			System.out.println(resultSplit[i]);
 		}

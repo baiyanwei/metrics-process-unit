@@ -14,17 +14,17 @@ public class StandardConstant {
 	//id名称，某些防火墙定义id字段，用于对防火墙策略进行排序
 	public static final String ID_NAME="id";
 	//ip地址
-	public static final String IP_ADDRESS="ipAddress";
+	public static final String IP_ADDRESS="ipAdd";
 	//ip地址段
-	public static final String RANGE_ADDRESS="rangeAddress";
+	public static final String RANGE_ADDRESS="rangeAdd";
 	//子网
-	public static final String NET_ADDRESS="netAddress";
+	public static final String NET_ADDRESS="netAdd";
 	//地址段排除某些IP地址
-	public static final String RANGE_ADDRESS_EXCEPT="rangeAddressExcept";
+	public static final String RANGE_ADDRESS_EXCEPT="rangeAddExc";
 	//子网排除某些IP地址
-	public static final String NET_ADDRESS_EXCEPT="netAddressExcept";
+	public static final String NET_ADDRESS_EXCEPT="netAddExc";
 	//预定义服务
-	public static final String PREDEFINED_SERVICE="predefinedService";
+	public static final String PREDEFINED_SERVICE="preService";
 	//定义子网时的子属性
 	public static final String SUBNET="subNet";
 	//定义子网时的子属性，子网掩码，支持/24格式，以及255。255。255.0
@@ -33,10 +33,10 @@ public class StandardConstant {
 	public static final String RANGE_START="ipS";
 	//地址段子属性，定义IP地址终止地址
 	public static final String RANGE_END="ipE";
-	//地址排除子属性，定义此排除地址为一个子网
-	public static final String SUBNET_EXCEPT="netExcept";
-	//地址排除子属性，定义此排除地址为一个地址范围
-	public static final String RANGE_EXCEPT="rangeExcept";
+	//子网地址排除子属性，定义排除地址
+	public static final String SUBNET_EXCEPT="netExc";
+	//地址范围排除子属性，定义排除地址
+	public static final String RANGE_EXCEPT="rangeExc";
 	//对标准化后的策略信息进行排序时定义，desc表示对标准化后的顺序进行倒序排列
 	public static final String DESC="desc";
 	//对标准化后的策略信息进行排序时定义，id:desc表示对id字段进行倒序排列，必须标准化id字段才可以设置
@@ -44,15 +44,15 @@ public class StandardConstant {
 	//对标准化后的策略信息进行排序时定义，id:desc表示对id字段进行升序排列，必须标准化id字段才可以设置
 	public static final String ID_ASC="id:asc";
 	//icmp协议名称
-	public static final String ICMP_PROTOCOL="icmpProto";
+	public static final String ICMP_PROTOCOL="icmpPro";
 	//icmp协议子属性，协议类型
 	public static final String ICMP_TYPE="icmpType";
 	//icmp协议子属性，协议编码
 	public static final String ICMP_CODE="icmpCode";
 	//其他协议，如在策略中直接定义某一个协议
-	public static final String OTHER_PROTOCOL="otherProto";
+	public static final String OTHER_PROTOCOL="otherPro";
 	//其他协议子属性，协议编码
-	public static final String OTHER_PROTOCOL_NUM="protoNum";
+	public static final String OTHER_PROTOCOL_NUM="proNum";
 	//tcp、udp或其他定义有源端口，目的端口的协议
 	public static final String TCP_UDP_PROTOCOL="tcpAndUdp";
 	//tcp、udp协议子属性，协议名称
@@ -67,4 +67,6 @@ public class StandardConstant {
 	public static final String TCP_UDP_DST_PORT_END="dstPortE";
 	//原始信息名称
 	public static final String ORIGIN_NAME="origin";
+	//当配置标准化规则配置此值时，将保存防火墙整个配置信息
+	public static final String CONFIG_SAVE_ALL_VALUES="saveAll";
 }

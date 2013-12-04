@@ -28,8 +28,10 @@ import com.secpro.platform.monitoring.process.dao.impl.ResDao;
 public class SSHStorageAndMatch implements IDataProcessChain{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(SSHStorageAndMatch.class);
 	private int chainID=0;
-	private static final String CONTAIN_EVENT_NAME="contain";
-	private static final String CONFLICT_EVENT_NAME="conflict";
+	//包含事件名称
+	private final String CONTAIN_EVENT_NAME="contain";
+	//冲突事件名称
+	private final String CONFLICT_EVENT_NAME="conflict";
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {
 		theLogger.debug("ssh dataProcess chain ID: "+getChainID());

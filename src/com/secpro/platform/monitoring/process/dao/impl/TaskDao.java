@@ -1,7 +1,7 @@
 package com.secpro.platform.monitoring.process.dao.impl;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.secpro.platform.log.utils.PlatformLogger;
@@ -10,34 +10,35 @@ import com.secpro.platform.monitoring.process.entity.TaskBean;
 import com.secpro.platform.monitoring.process.utils.DBUtil;
 
 public class TaskDao implements ITaskDao {
-	private static PlatformLogger theLogger = PlatformLogger.getLogger(CompanyDao.class);
-	public static final String TASK_SUCCESS = "1";
-	public static final String TASK_FAILED = "0";
+	private static PlatformLogger theLogger = PlatformLogger.getLogger(TaskDao.class);
 
 	@Override
 	public void taskStatusUpdate(TaskBean taskBean) {
 		Connection conn = DBUtil.getConnection();
 		Statement statement = null;
-//		try {
-//			statement = conn.createStatement();
-//			String sql = "UPDATE SYS_TASK_STATUS SET EXEU_DATE='" + executeDate
-//					+ "',STATUS='" + status + "' WHERE TASK_CODE='"
-//					+ taskCode + "'";
-//			statement.execute(sql);
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			//e.printStackTrace();
-//			theLogger.exception(e);
-//		} finally {
-//			DBUtil.closeConnection(conn, statement);
-//		}
+		try {
+			statement = conn.createStatement();
+			StringBuilder sql=new StringBuilder();
+			sql.append("update msu_schedule set execute_at=").append(taskBean.getExecuteAt())
+			.append(",execute_cost=").append(taskBean.getExecuteCost()).append(",execute_stats=")
+			.append(taskBean.getExecuteStatus()).append(",execute_description='")
+			.append(taskBean.getExecuteDes()).append("' where schedule_id='")
+			.append(taskBean.getScheduleID()).append("'");
+			statement.execute(sql.toString());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			theLogger.exception(e);
+		} finally {
+			DBUtil.closeConnection(conn, statement);
+		}
 	}
 
-	@Override
-	public void cacheTaskSave(TaskBean taskBean) {
-		Connection conn = DBUtil.getConnection();
-		Statement statement = null;
-		ResultSet result = null;
+	
+//	public void cacheTaskSave(TaskBean taskBean) {
+//		Connection conn = DBUtil.getConnection();
+//		Statement statement = null;
+//		ResultSet result = null;
 //		try {
 //			statement = conn.createStatement();
 //			String sql = "SELECT * FROM SYS_TASK_STATUS WHERE TASK_CODE='"
@@ -67,6 +68,6 @@ public class TaskDao implements ITaskDao {
 //			DBUtil.closeConnection(conn, statement, result);
 //		}
 
-	}
+//	}
 
 }

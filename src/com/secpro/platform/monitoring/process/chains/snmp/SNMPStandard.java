@@ -28,6 +28,10 @@ public class SNMPStandard implements IDataProcessChain {
 			.getLogger(SNMPStandard.class);
 	private int chainID = 0;
 
+	private final String TIMEOUT="timeout";
+
+	private final String NOSUCHOBJECT="nosuchobject";
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {
 		theLogger.debug("snmp dataProcess chain ID: " + getChainID());
@@ -40,15 +44,15 @@ public class SNMPStandard implements IDataProcessChain {
 			return null;
 		}
 		Map<String, Object> snmpData = (Map<String, Object>) rawData;
-		String taskCode = (String) snmpData.get(MetaDataConstant.TASK_CODE);
-		if (Assert.isEmptyString(taskCode)) {
-			theLogger.error("the task code of snmp data is empty");
-			return null;
-		}
-		String executeDate = (String) snmpData
-				.get(MetaDataConstant.EXECUTE_DATE);
+//		String taskCode = (String) snmpData.get(MetaDataConstant.TASK_CODE);
+//		if (Assert.isEmptyString(taskCode)) {
+//			theLogger.error("the task code of snmp data is empty");
+//			return null;
+//		}
+//		String executeDate = (String) snmpData
+//				.get(MetaDataConstant.EXECUTE_DATE);
 		// 更新任务状态
-		setTaskStatus(taskCode, executeDate);
+		setTaskStatus(snmpData,TaskCompleted.TASK_SUCCESS);
 		String cityCode = (String) snmpData.get(MetaDataConstant.CITY_CODE);
 		String targetIP = (String) snmpData.get(MetaDataConstant.TARGET_IP);
 		if (Assert.isEmptyString(cityCode) || Assert.isEmptyString(targetIP)) {
@@ -76,7 +80,7 @@ public class SNMPStandard implements IDataProcessChain {
 			}
 			String snmpValue = resultMapping.get(snmpKey);
 			if (Assert.isEmptyString(snmpValue)) {
-				resultMapping.put(snmpKey, "nosuchobject");
+				resultMapping.put(snmpKey, NOSUCHOBJECT);
 			}
 			String[] idAndRule = kpiIDAndRules.get(snmpKey);
 			if (idAndRule == null || idAndRule.length != 2
@@ -85,13 +89,13 @@ public class SNMPStandard implements IDataProcessChain {
 				theLogger.debug("haven't kpi id of the snmp data");
 				continue;
 			}
-			if (!"nosuchobject".equals(snmpValue)
-					&& !"timeout".equals(snmpValue)
+			if (!NOSUCHOBJECT.equals(snmpValue)
+					&& !TIMEOUT.equals(snmpValue)
 					&& !Assert.isEmptyString(idAndRule[1])) {
 				// 对snmp执行结果进行标准化
 				snmpValue = snmpStandard(snmpValue, idAndRule[1]);
 				if (Assert.isEmptyString(snmpValue)) {
-					snmpValue = "nosuchobject";
+					snmpValue = NOSUCHOBJECT;
 				}
 			}
 			// 将kpiID与执行结果对应，kpiID为String类型
@@ -112,7 +116,7 @@ public class SNMPStandard implements IDataProcessChain {
 	 * @return
 	 */
 	private String snmpStandard(String snmpValue, String rules) {
-		String[] rule = rules.split("\\^");
+		String[] rule = rules.split("##");
 		for (int i = 0; i < rule.length; i++) {
 			if (Assert.isEmptyString(rule[i])) {
 				continue;
@@ -125,7 +129,7 @@ public class SNMPStandard implements IDataProcessChain {
 				if ("R".equals(actionType)) {
 					snmpValue = regexFormat(snmpValue, rule[i]);
 				} else if ("P".equals(actionType)) {
-					snmpValue = mathFormat(snmpValue, rule[i]);
+					snmpValue = percentFormat(snmpValue, rule[i]);
 				} else {
 					theLogger
 							.debug("without this operation method of custom action type");
@@ -142,7 +146,7 @@ public class SNMPStandard implements IDataProcessChain {
 	 * @param mathOperation
 	 * @return
 	 */
-	private String mathFormat(String values, String mathOper) {
+	private String percentFormat(String values, String mathOper) {
 		if (Assert.isEmptyString(values) || Assert.isEmptyString(mathOper)) {
 			return null;
 		}
@@ -222,8 +226,8 @@ public class SNMPStandard implements IDataProcessChain {
 	 * @param taskCode
 	 * @param executeDate
 	 */
-	private void setTaskStatus(String taskCode, String executeDate) {
-		Thread setTaskStatus = new TaskCompleted(taskCode, executeDate);
+	private void setTaskStatus(Map<String,Object> data,int executeResult) {
+		Thread setTaskStatus = new TaskCompleted(data, executeResult);
 		setTaskStatus.start();
 	}
 

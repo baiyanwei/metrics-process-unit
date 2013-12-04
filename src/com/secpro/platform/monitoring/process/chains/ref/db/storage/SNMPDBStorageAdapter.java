@@ -12,7 +12,7 @@ import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataConstant;
 import com.secpro.platform.monitoring.process.dao.IKpiDao;
 import com.secpro.platform.monitoring.process.dao.impl.KpiDao;
 import com.secpro.platform.monitoring.process.entity.KpiBean;
-import com.secpro.platform.monitoring.process.utils.DateFormat;
+import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
 /**
  * SNMP类型数据存储
  * @author sxf
@@ -20,9 +20,12 @@ import com.secpro.platform.monitoring.process.utils.DateFormat;
  */
 public class SNMPDBStorageAdapter extends DBStorage{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(SNMPDBStorageAdapter.class);
-	private final String TIMEOUT="timeout";
-	private final String NOSUCHOBJECT="nosuchobject";
-	private final String NUMBER_VALUE="1";
+	//超时事件名称
+	private static final String TIMEOUT="timeout";
+	//没有对应对象事件名称
+	private static final String NOSUCHOBJECT="nosuchobject";
+	//是否为数值类型
+	private static final String NUMBER_VALUE="1";
 	public SNMPDBStorageAdapter(Object storeData) {
 		super(storeData);
 		// TODO Auto-generated constructor stub
@@ -48,7 +51,7 @@ public class SNMPDBStorageAdapter extends DBStorage{
 			return;
 		}
 		long resID=(Long) snmpData.get("resID");
-		String cdate=DateFormat.getNowDate();
+		String cdate=DateFormatUtil.getNowDate();
 		List<KpiBean> storeList=new ArrayList<KpiBean>();
 		for(String resultKey:executeResult.keySet()){
 			String resultValue=executeResult.get(resultKey);

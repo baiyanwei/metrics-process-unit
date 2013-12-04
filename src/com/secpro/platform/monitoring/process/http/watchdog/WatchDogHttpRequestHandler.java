@@ -51,7 +51,7 @@ public class WatchDogHttpRequestHandler implements IHttpRequestHandler {
 		if (processChainService == null) {
 			throw new PlatformException("Can't find the ProcessChainService!");
 		} else {
-			processChainService.dataProcess(messageObj);
+			processChainService.watchdogDataProcess(messageObj);
 		}
 		return "OK";
 	}
@@ -112,16 +112,5 @@ public class WatchDogHttpRequestHandler implements IHttpRequestHandler {
 		return theLogger.MessageFormat("toString", name, path);
 	}
 
-	@Override
-	public void fireSucceed(Object messageObj) throws PlatformException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void fireError(Object messageObj) throws PlatformException {
-		// TODO Auto-generated method stub
-
-	}
 
 }

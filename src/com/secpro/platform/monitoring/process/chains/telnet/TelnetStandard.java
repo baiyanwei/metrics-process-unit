@@ -36,15 +36,15 @@ public class TelnetStandard implements IDataProcessChain{
 			return null;
 		}
 		Map telnetData=(Map)rawData;
-		String taskCode=(String)telnetData.get(MetaDataConstant.TASK_CODE);
-		if(Assert.isEmptyString(taskCode))
-		{
-			theLogger.error("invalid taskCode in telnet data processing.");
-			return null;
-		}
-		String executeDate=(String)telnetData.get(MetaDataConstant.EXECUTE_DATE);
+//		String taskCode=(String)telnetData.get(MetaDataConstant.TASK_CODE);
+//		if(Assert.isEmptyString(taskCode))
+//		{
+//			theLogger.error("invalid taskCode in telnet data processing.");
+//			return null;
+//		}
+//		String executeDate=(String)telnetData.get(MetaDataConstant.EXECUTE_DATE);
 		//更新任务状态
-		setTaskStatus(taskCode,executeDate);
+		setTaskStatus(telnetData,TaskCompleted.TASK_SUCCESS);
 		String cityCode=(String) telnetData.get(MetaDataConstant.CITY_CODE);
 		String targetIP=(String) telnetData.get(MetaDataConstant.TARGET_IP);
 		if(Assert.isEmptyString(cityCode)||Assert.isEmptyString(targetIP)){
@@ -99,8 +99,8 @@ public class TelnetStandard implements IDataProcessChain{
 	 * @param taskCode
 	 * @param executeDate
 	 */
-	private void setTaskStatus(String taskCode,String executeDate){
-		Thread setTaskStatus=new TaskCompleted(taskCode,executeDate);
+	private void setTaskStatus(Map<String,Object> data,int executeResult) {
+		Thread setTaskStatus = new TaskCompleted(data, executeResult);
 		setTaskStatus.start();
 	}
 

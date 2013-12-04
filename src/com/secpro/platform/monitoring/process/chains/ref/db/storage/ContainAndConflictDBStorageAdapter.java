@@ -10,7 +10,7 @@ import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataConstant;
 import com.secpro.platform.monitoring.process.dao.IConfigAndPolicyDao;
 import com.secpro.platform.monitoring.process.dao.impl.ConfigAndPolicyDao;
 import com.secpro.platform.monitoring.process.entity.ContainAndConflictBean;
-import com.secpro.platform.monitoring.process.utils.DateFormat;
+import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
 /**
  * 包含和冲突信息存储
  * @author sxf
@@ -48,7 +48,7 @@ public class ContainAndConflictDBStorageAdapter extends DBStorage {
 		long resID = (Long) containAndConflictData.get("resID");
 		String taskCode = (String) containAndConflictData
 				.get(MetaDataConstant.TASK_CODE);
-		String cdate = DateFormat.getNowDate();
+		String cdate = DateFormatUtil.getNowDate();
 		StringBuilder containAndConflictInfo = new StringBuilder();
 		if (Assert.isEmptyString(executeResult[0])) {
 			containAndConflictInfo.append("#contain##contain#");

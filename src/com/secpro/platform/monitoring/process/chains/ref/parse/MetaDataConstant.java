@@ -6,23 +6,34 @@ package com.secpro.platform.monitoring.process.chains.ref.parse;
  */
 public class MetaDataConstant {
 
-	public static final String META_TIMESTAMP_PROPERTY_NAME = "timestamp";
-	public static final String META_MONITOR_ID_PROPERTY_NAME = "monitor_id";
+	//public static final String META_TIMESTAMP_PROPERTY_NAME = "timestamp";
+	//元数据中任务调度ID
+	public static final String META_MONITOR_ID_PROPERTY_NAME = "sid";
+	//元数据结果体
 	public static final String META_BODY_PROPERTY_NAME = "body";
-	public static final String META_MID_PROPERTY_NAME = "mid";
-	public static final String META_DATE_PROPERTY_NAME = "t";
-	public static final String META_TARGETIP_PROPERTY_NAME = "ip";
+	//public static final String META_MID_PROPERTY_NAME = "mid";
+	public static final String META_EXECUTE_AT_PROPERTY_NAME = "ea";
+	public static final String META_EXECUTE_COST_PROPERTY_NAME = "ec";
+	//元数据中目的IP地址
+	public static final String META_TARGETIP_PROPERTY_NAME = "tip";
 	public static final String META_EXECUTECOMMAND_PROPERTY_NAME = "s";
+	//元数据中任务执行结果
 	public static final String META_RESULT_PROPERTY_NAME = "c";
-	public static final String META_ORIGIN_PROPERTY_NAME = "o";
-	public static final String META_RECEIVE_DATA_PROPERTY_NAME = "ct";
+	public static final String META_SYSLOG_ORIGIN_PROPERTY_NAME = "o";
+	public static final String META_SYSLOG_TARGETIP_PROPERTY_NAME = "ip";
+	public static final String META_SYSLOG_RECEIVE_DATA_PROPERTY_NAME = "ct";
 	public static final String META_CITYCODE_PROPERTY_NAME = "city_code";
 	public static final String CITY_CODE = "cityCode";
+	//解析后任务调度ID
 	public static final String TASK_CODE = "taskCode";
+	//解析后目的IP地址
 	public static final String TARGET_IP = "targetIP";
+	public static final String ERROR_DESCRIPTION = "targetIP";
 	public static final String EXECUTE_RESULT = "executeResult";
 	public static final String ORIGIN_SYSLOG = "originSyslog";
-	public static final String EXECUTE_DATE = "executeData";
+	public static final String EXECUTE_DATE = "executeAt";
+	public static final String EXECUTE_COST="executeCost";
+	//watchdog元数据解析
 	public static final String WATCHDOG_DATE_PROPERTY_NAME="time";
 	public static final String WATCHDOG_CITYCODE_PROPERTY_NAME="citycode";
 	public static final String WATCHDOG_BODY_PROPERTY_NAME="body";

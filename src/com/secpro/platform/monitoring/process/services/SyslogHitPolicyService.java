@@ -21,7 +21,7 @@ import com.secpro.platform.monitoring.process.dao.IConfigAndPolicyDao;
 import com.secpro.platform.monitoring.process.dao.ISyslogDao;
 import com.secpro.platform.monitoring.process.dao.impl.ConfigAndPolicyDao;
 import com.secpro.platform.monitoring.process.dao.impl.SyslogDao;
-import com.secpro.platform.monitoring.process.utils.DateFormat;
+import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
 /**
  * 根据配置文件定义的间隔时间，计算syslog与策略信息的命中
  * @author sxf
@@ -157,7 +157,7 @@ public class SyslogHitPolicyService implements IService{
 			}
 			//计算完命中后，如若有结果，则存入数据库中
 			if(hitResult.size()>0){
-				syslogHitStorage(DateFormat.timestampFormat(startDate),DateFormat.timestampFormat(endDate),hitResult);
+				syslogHitStorage(DateFormatUtil.timestampFormat(startDate),DateFormatUtil.timestampFormat(endDate),hitResult);
 			}
 
 		}
