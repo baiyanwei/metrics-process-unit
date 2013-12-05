@@ -8,7 +8,9 @@ import com.secpro.platform.log.utils.PlatformLogger;
 import com.secpro.platform.monitoring.process.services.FileStorageService;
 import com.secpro.platform.monitoring.process.services.MCAStatusMonitoringService;
 import com.secpro.platform.monitoring.process.services.ProcessChainService;
+import com.secpro.platform.monitoring.process.services.PublishWebService;
 import com.secpro.platform.monitoring.process.services.SMSAlarmService;
+import com.secpro.platform.monitoring.process.services.ScanFWConfigurationFileService;
 import com.secpro.platform.monitoring.process.services.SyslogHitPolicyService;
 import com.secpro.platform.monitoring.process.services.SyslogStandardRuleService;
 
@@ -82,6 +84,11 @@ public class Activator implements BundleActivator {
 
 			ServiceHelper.unregisterService(mcaMonitor);
 		}
+		ScanFWConfigurationFileService scanFileService=ServiceHelper.findService(ScanFWConfigurationFileService.class);
+		if(mcaMonitor!=null){
+
+			ServiceHelper.unregisterService(scanFileService);
+		}
 	}
 
 	/**
@@ -90,17 +97,20 @@ public class Activator implements BundleActivator {
 	 */
 	private void registerServices() throws Exception{
 		//数据处理链服务
-		//ServiceHelper.registerService(new ProcessChainService());
+		ServiceHelper.registerService(new ProcessChainService());
 		//syslog标准化规则服务
 		ServiceHelper.registerService(new SyslogStandardRuleService());
 		//syslog与策略信息命中服务
-		//ServiceHelper.registerService(new SyslogHitPolicyService());
+		ServiceHelper.registerService(new SyslogHitPolicyService());
 		//文件存储服务
-		//ServiceHelper.registerService(new FileStorageService());
+		ServiceHelper.registerService(new FileStorageService());
 		//告警短信服务
 		ServiceHelper.registerService(new SMSAlarmService());
-		//ServiceHelper.registerService(new PublishWebService());
+		ServiceHelper.registerService(new PublishWebService());
+		//MCA状态监控服务
 		ServiceHelper.registerService(new MCAStatusMonitoringService());
+		//扫描防火墙配置文件服务
+		ServiceHelper.registerService(new ScanFWConfigurationFileService());
 	}
 
 }

@@ -19,7 +19,7 @@ public class TaskCompleted extends Thread{
 			.getLogger(TaskCompleted.class);
 	public static final int TASK_SUCCESS=1;
 	public static final int TASK_ERROR=0;
-	private static final String TASK_SUCCESS_DES="";
+	private static final String TASK_SUCCESS_DES="success";
 	private Map<String,Object> _data;
 	private int _executeResult;
 	public TaskCompleted(Map<String,Object> data,int executeResult){

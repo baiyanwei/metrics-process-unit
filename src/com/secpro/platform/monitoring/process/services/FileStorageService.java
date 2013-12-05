@@ -24,11 +24,12 @@ public class FileStorageService implements IService{
 	public long maxStorageSize=0L;
 	@XmlElement(name = "executeFileSaveTimer",type=Long.class, defaultValue ="5000")
 	public long executeFileSaveTimer=5000L;
+	@XmlElement(name = "fileSlash", defaultValue ="/")
+	public String fileSlash="/";
 	private Thread fileStorageThread;
 	private List<String> saveMessage=new ArrayList<String>();
 	private long storedSize=0L;
 	private String fileName="";
-	private String slash="/";
 	@Override
 	public void start() throws Exception {
 		startFileStroage();
@@ -137,14 +138,14 @@ public class FileStorageService implements IService{
 			return null;
 		}
 		String filePath="";
-		boolean pathIsHaveSlash=path.endsWith(slash);
-		boolean nameIsHaveSlash=fileName.startsWith(slash);
+		boolean pathIsHaveSlash=path.endsWith(fileSlash);
+		boolean nameIsHaveSlash=fileName.startsWith(fileSlash);
 		if(pathIsHaveSlash&&nameIsHaveSlash){
 			filePath=path+fileName.substring(1,fileName.length());
 		}else if(pathIsHaveSlash||nameIsHaveSlash){
 			filePath=path+fileName;
 		}else{
-			filePath=path+slash+fileName;
+			filePath=path+fileSlash+fileName;
 		}
 		return filePath;
 	}

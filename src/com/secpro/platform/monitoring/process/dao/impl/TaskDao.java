@@ -20,7 +20,7 @@ public class TaskDao implements ITaskDao {
 			statement = conn.createStatement();
 			StringBuilder sql=new StringBuilder();
 			sql.append("update msu_schedule set execute_at=").append(taskBean.getExecuteAt())
-			.append(",execute_cost=").append(taskBean.getExecuteCost()).append(",execute_stats=")
+			.append(",execute_cost=").append(taskBean.getExecuteCost()).append(",execute_status=")
 			.append(taskBean.getExecuteStatus()).append(",execute_description='")
 			.append(taskBean.getExecuteDes()).append("' where schedule_id='")
 			.append(taskBean.getScheduleID()).append("'");

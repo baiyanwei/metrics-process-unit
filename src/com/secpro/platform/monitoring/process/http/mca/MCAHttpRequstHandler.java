@@ -23,7 +23,7 @@ public class MCAHttpRequstHandler implements IHttpRequestHandler {
 	private String description = null;
 	@XmlElement(name = "path", type = String.class)
 	public String path = "";
-	public static final String CITY_CODE_PROPERTY_NAME = "location";
+	public static final String CITY_CODE_PROPERTY_NAME = "region";
 
 	@Override
 	public Object DELETE(HttpRequest request, Object messageObj)
