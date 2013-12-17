@@ -13,23 +13,32 @@ import com.secpro.platform.core.services.ServiceInfo;
 import com.secpro.platform.core.utils.Assert;
 import com.secpro.platform.log.utils.PlatformLogger;
 import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
-@ServiceInfo(description = "process unit file storage service", configurationPath = "dpu/services/FileStorageService/")
-public class FileStorageService implements IService{
-	private static PlatformLogger theLogger = PlatformLogger.getLogger(FileStorageService.class);
-	@XmlElement(name = "fileStoragePath", defaultValue ="")
-	public String fileStoragePath="";
-	@XmlElement(name = "fileStorageName", defaultValue ="")
-	public String fileStorageName="";
-	@XmlElement(name = "maxStorageSize",type=Long.class, defaultValue ="104857600")
-	public long maxStorageSize=0L;
-	@XmlElement(name = "executeFileSaveTimer",type=Long.class, defaultValue ="5000")
-	public long executeFileSaveTimer=5000L;
-	@XmlElement(name = "fileSlash", defaultValue ="/")
-	public String fileSlash="/";
+/**
+ * 文件存储服务
+ * 用于存储数据信息
+ * @author sxf
+ *
+ */
+
+@ServiceInfo(description = "process unit file storage service", configurationPath = "/app/mpu/services/FileStorageService/")
+public class FileStorageService implements IService {
+	private static PlatformLogger theLogger = PlatformLogger
+			.getLogger(FileStorageService.class);
+	@XmlElement(name = "fileStoragePath", defaultValue = "")
+	public String fileStoragePath = "";
+	@XmlElement(name = "fileStorageName", defaultValue = "")
+	public String fileStorageName = "";
+	@XmlElement(name = "maxStorageSize", type = Long.class, defaultValue = "104857600")
+	public long maxStorageSize = 0L;
+	@XmlElement(name = "executeFileSaveTimer", type = Long.class, defaultValue = "5000")
+	public long executeFileSaveTimer = 5000L;
+	@XmlElement(name = "fileSlash", defaultValue = "/")
+	public String fileSlash = "/";
 	private Thread fileStorageThread;
-	private List<String> saveMessage=new ArrayList<String>();
-	private long storedSize=0L;
-	private String fileName="";
+	private List<String> saveMessage = new ArrayList<String>();
+	private long storedSize = 0L;
+	private String fileName = "";
+
 	@Override
 	public void start() throws Exception {
 		startFileStroage();
@@ -37,92 +46,107 @@ public class FileStorageService implements IService{
 	}
 
 	private void startFileStroage() {
-		if(Assert.isEmptyString(fileStoragePath)||Assert.isEmptyString(fileStorageName)){
+		if (Assert.isEmptyString(fileStoragePath)
+				|| Assert.isEmptyString(fileStorageName)) {
 			return;
 		}
-		if(executeFileSaveTimer>0L&&maxStorageSize>0L){
-			fileStorageThread=new Thread() {
+		if (executeFileSaveTimer > 0L && maxStorageSize > 0L) {
+			fileStorageThread = new Thread() {
 				public void run() {
 					try {
-						while(true){
+						while (true) {
 							sleep(executeFileSaveTimer);
-							//文件存储
+							// 文件存储
 							fileStorage();
 						}
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
-						//e.printStackTrace();
+						// e.printStackTrace();
 						theLogger.exception(e);
 					}
 
 				}
 			};
-			//启动线程
+			// 启动线程
 			fileStorageThread.start();
-			
+			theLogger.info("fileStorageStart",fileStoragePath,fileStorageName);
+
 		}
-		
+
 	}
+
+	/**
+	 * 文件存储
+	 */
 	private void fileStorage() {
-		if(saveMessage==null||saveMessage.size()==0||Assert.isEmptyString(fileStoragePath)||Assert.isEmptyString(fileStorageName)){
+		theLogger.debug("execute file storage");
+		if (saveMessage == null || saveMessage.size() == 0
+				|| Assert.isEmptyString(fileStoragePath)
+				|| Assert.isEmptyString(fileStorageName)) {
 			return;
 		}
 
-		
-		if(storedSize<maxStorageSize){
-			if(Assert.isEmptyString(fileName)){
+		if (storedSize < maxStorageSize) {
+			if (Assert.isEmptyString(fileName)) {
 
 				int index;
-				if((index=fileStorageName.lastIndexOf("."))==-1){
-					fileName=fileStorageName+DateFormatUtil.getNowDate()+".log";
-				}else{
-					fileName=fileStorageName.substring(0,index)+DateFormatUtil.getNowDate()+fileStorageName.substring(index,fileStorageName.length());
+				if ((index = fileStorageName.lastIndexOf(".")) == -1) {
+					fileName = fileStorageName + DateFormatUtil.getNowDate()
+							+ ".log";
+				} else {
+					fileName = fileStorageName.substring(0, index)
+							+ DateFormatUtil.getNowDate()
+							+ fileStorageName.substring(index,
+									fileStorageName.length());
 				}
 			}
-		}else{
-			if(Assert.isEmptyString(fileName)){
+		} else {
+			if (Assert.isEmptyString(fileName)) {
 				return;
 			}
 			int index;
-			if((index=fileStorageName.lastIndexOf("."))==-1){
-				fileName=fileStorageName+DateFormatUtil.getNowDate()+".log";
-			}else{
-				fileName=fileStorageName.substring(0,index)+DateFormatUtil.getNowDate()+fileStorageName.substring(index,fileStorageName.length());
+			if ((index = fileStorageName.lastIndexOf(".")) == -1) {
+				fileName = fileStorageName + DateFormatUtil.getNowDate()
+						+ ".log";
+			} else {
+				fileName = fileStorageName.substring(0, index)
+						+ DateFormatUtil.getNowDate()
+						+ fileStorageName.substring(index,
+								fileStorageName.length());
 			}
 
-			storedSize=0;
+			storedSize = 0;
 		}
-		String filePath=combineFileStoragePath(fileStoragePath,fileName);
-		if(Assert.isEmptyString(filePath)){
+		String filePath = combineFileStoragePath(fileStoragePath, fileName);
+		if (Assert.isEmptyString(filePath)) {
 			return;
 		}
-		FileWriter fileWriter=null;
-		synchronized(saveMessage){
-			try{
-				for(String message:saveMessage){
-					if(Assert.isEmptyString(message)){
+		FileWriter fileWriter = null;
+		synchronized (saveMessage) {
+			try {
+				for (String message : saveMessage) {
+					if (Assert.isEmptyString(message)) {
 						continue;
 					}
-					File file=new File(filePath);
-					if(!file.getParentFile().exists())
-					{
+					File file = new File(filePath);
+					if (!file.getParentFile().exists()) {
 						file.getParentFile().mkdirs();
 
 					}
-					if(!file.exists()){
+					if (!file.exists()) {
 						file.createNewFile();
 					}
-					fileWriter=new FileWriter(file,true);
-					message+="\n";
-					fileWriter.write(message,0,message.length());
+					fileWriter = new FileWriter(file, true);
+					message += "\n";
+					fileWriter.write(message, 0, message.length());
 					fileWriter.flush();
-					storedSize+=message.length();
+					storedSize += message.length();
 				}
 				saveMessage.clear();
-			}catch(Exception e){
+			} catch (Exception e) {
 				theLogger.exception(e);
-			}finally{
-				if(fileWriter!=null){
+			} finally {
+				if (fileWriter != null) {
 					try {
 						fileWriter.close();
 					} catch (IOException e) {
@@ -133,27 +157,41 @@ public class FileStorageService implements IService{
 			}
 		}
 	}
-	private String combineFileStoragePath(String path,String fileName){
-		if(Assert.isEmptyString(path)||Assert.isEmptyString(fileName)){
+
+	/**
+	 * 获取文件存储路径
+	 * 
+	 * @param path
+	 * @param fileName
+	 * @return
+	 */
+	private String combineFileStoragePath(String path, String fileName) {
+		if (Assert.isEmptyString(path) || Assert.isEmptyString(fileName)) {
 			return null;
 		}
-		String filePath="";
-		boolean pathIsHaveSlash=path.endsWith(fileSlash);
-		boolean nameIsHaveSlash=fileName.startsWith(fileSlash);
-		if(pathIsHaveSlash&&nameIsHaveSlash){
-			filePath=path+fileName.substring(1,fileName.length());
-		}else if(pathIsHaveSlash||nameIsHaveSlash){
-			filePath=path+fileName;
-		}else{
-			filePath=path+fileSlash+fileName;
+		String filePath = "";
+		boolean pathIsHaveSlash = path.endsWith(fileSlash);
+		boolean nameIsHaveSlash = fileName.startsWith(fileSlash);
+		if (pathIsHaveSlash && nameIsHaveSlash) {
+			filePath = path + fileName.substring(1, fileName.length());
+		} else if (pathIsHaveSlash || nameIsHaveSlash) {
+			filePath = path + fileName;
+		} else {
+			filePath = path + fileSlash + fileName;
 		}
 		return filePath;
 	}
-	public void saveMessage(String message){
-		if(fileStorageThread==null||saveMessage==null){
+
+	/**
+	 * 缓存要存入文件的数据信息
+	 * 
+	 * @param message
+	 */
+	public void saveMessage(String message) {
+		if (fileStorageThread == null || saveMessage == null) {
 			return;
 		}
-		synchronized(saveMessage){
+		synchronized (saveMessage) {
 			saveMessage.add(message);
 		}
 
@@ -161,7 +199,7 @@ public class FileStorageService implements IService{
 
 	@Override
 	public void stop() throws Exception {
-		if(fileStorageThread!=null){
+		if (fileStorageThread != null) {
 			fileStorageThread.interrupt();
 		}
 		theLogger.info("stopped");

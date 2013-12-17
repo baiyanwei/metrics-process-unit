@@ -17,24 +17,20 @@ public interface IKpiDao {
 	 * @return
 	 */
 	public Map<String, String[]> kpiIDAndRuleQuery(String cityCode,String resIP);
-	/**、
-	 * kpi类型查询
-	 * @param kpiID
-	 * @return
-	 */
-	public String kpiTypeQuery(long kpiID);
+
+	//public String kpiTypeQuery(long kpiID);
 	/**
 	 * 存储kpi结果
 	 * @param snmpList
 	 */
 	public void rawKpiSave(List<KpiBean> snmpList);
 	/**
-	 * 查询kpiID以及kpi类型
+	 * 查询kpiID
 	 * @param kpiName
 	 * @param resID
 	 * @return
 	 */
-	public String[] kpiTypeAndKpiIDQuery(String kpiName,long resID);
+	public long kpiIDQuery(String kpiName,long resID);
 	/**
 	 * kpi名称查询
 	 * @param kpiID

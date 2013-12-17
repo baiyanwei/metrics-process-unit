@@ -11,10 +11,12 @@ import com.secpro.platform.monitoring.process.dao.IConfigAndPolicyDao;
 import com.secpro.platform.monitoring.process.dao.impl.ConfigAndPolicyDao;
 import com.secpro.platform.monitoring.process.entity.ContainAndConflictBean;
 import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
+
 /**
  * 包含和冲突信息存储
+ * 
  * @author sxf
- *
+ * 
  */
 public class ContainAndConflictDBStorageAdapter extends DBStorage {
 

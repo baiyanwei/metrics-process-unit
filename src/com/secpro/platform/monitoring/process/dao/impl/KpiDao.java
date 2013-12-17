@@ -52,30 +52,30 @@ public class KpiDao implements IKpiDao{
 		return null;
 	}
 
-	@Override
-	public String kpiTypeQuery(long kpiID) {
-		if(kpiID==0){
-			return null;
-		}
-		Connection conn = DBUtil.getConnection();
-		Statement statement = null;
-		ResultSet result=null;
-		try {
-			statement = conn.createStatement();
-			String sql = "select kpi_type from sys_kpi_info where id="+kpiID;
-			result=statement.executeQuery(sql);
-			if(result.next()){
-				return result.getString(1);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			theLogger.exception(e);
-		} finally {
-			DBUtil.closeConnection(conn, statement,result);
-		}
-		return null;
-	}
+//	@Override
+//	public String kpiTypeQuery(long kpiID) {
+//		if(kpiID==0){
+//			return null;
+//		}
+//		Connection conn = DBUtil.getConnection();
+//		Statement statement = null;
+//		ResultSet result=null;
+//		try {
+//			statement = conn.createStatement();
+//			String sql = "select kpi_type from sys_kpi_info where id="+kpiID;
+//			result=statement.executeQuery(sql);
+//			if(result.next()){
+//				return result.getString(1);
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			//e.printStackTrace();
+//			theLogger.exception(e);
+//		} finally {
+//			DBUtil.closeConnection(conn, statement,result);
+//		}
+//		return null;
+//	}
 
 	@Override
 	public void rawKpiSave(List<KpiBean> snmpList) {
@@ -87,15 +87,15 @@ public class KpiDao implements IKpiDao{
 		
 		try {
 			
-			String sql = "insert into raw_kpi(res_id,kpi_id,cdate,value_str,value_num) values(?,?,?,?,?)";
+			String sql = "insert into raw_kpi(res_id,kpi_id,cdate,kpi_value) values(?,?,?,?)";
 			statement = conn.prepareStatement(sql);
 			int batch=0;
 			for(KpiBean snmpBean:snmpList){
 				statement.setLong(1, snmpBean.getResID());
 				statement.setLong(2, snmpBean.getKpiID());
 				statement.setString(3, snmpBean.getCdate());
-				statement.setString(4, snmpBean.getValueStr());
-				statement.setFloat(5, snmpBean.getValueInt());
+				statement.setString(4, snmpBean.getKpiValue());
+				//statement.setFloat(5, snmpBean.getValueInt());
 				statement.addBatch();
 				batch++;
 				if(batch==50){
@@ -117,22 +117,22 @@ public class KpiDao implements IKpiDao{
 	}
 
 	@Override
-	public String[] kpiTypeAndKpiIDQuery(String kpiName,long resID) {
+	public long kpiIDQuery(String kpiName,long resID) {
 		if(Assert.isEmptyString(kpiName)||resID==0){
-			return null;
+			return 0;
 		}
 		Connection conn = DBUtil.getConnection();
 		Statement statement = null;
 		ResultSet result=null;
 		try {
 			statement = conn.createStatement();
-			String sql = "select t1.kpi_type,t1.id from sys_kpi_info t1,sys_res_obj t2 where t2.id="+resID+" and t1.class_id=t2.class_id and kpi_name='"+kpiName+"'";
+			String sql = "select t1.id from sys_kpi_info t1,sys_res_obj t2 where t2.id="+resID+" and t1.class_id=t2.class_id and kpi_name='"+kpiName+"'";
 			result=statement.executeQuery(sql);
 			if(result.next()){
-				String[] resultS=new String[2];
-				resultS[0]=result.getString(1);
-				resultS[1]=result.getString(2);
-				return resultS;
+				//String[] resultS=new String[2];
+				//resultS[0]=result.getString(1);
+				//resultS[1]=result.getString(2);
+				return result.getLong(1);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -141,7 +141,7 @@ public class KpiDao implements IKpiDao{
 		} finally {
 			DBUtil.closeConnection(conn, statement,result);
 		}
-		return null;
+		return 0;
 	}
 
 	@Override

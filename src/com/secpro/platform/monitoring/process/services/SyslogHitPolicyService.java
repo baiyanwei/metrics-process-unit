@@ -27,7 +27,7 @@ import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
  * @author sxf
  *
  */
-@ServiceInfo(description = "syslog hit policy service", configurationPath = "dpu/services/SyslogHitPolicyService/")
+@ServiceInfo(description = "syslog hit policy service", configurationPath = "/app/mpu/services/SyslogHitPolicyService/")
 public class SyslogHitPolicyService implements IService{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(SyslogHitPolicyService.class);
 		//syslog与策略信息命中间隔时间
@@ -86,12 +86,14 @@ public class SyslogHitPolicyService implements IService{
 			};
 			//启动线程
 			syslogHitThread.start();
+			theLogger.info("syslogHitStart",executeHitTimer,syslogHitDataFormat,syslogHitMatchRule);
 		}
 	}
 	/**
 	 * 进行syslog命中
 	 */
 	private void excuteSyslogHit() {
+		theLogger.debug("execute syslog hit policy info");
 		//查询数据中需要进行命中计算的syslog日志
 		List<String[]> syslogs=loadNeedHitSyslogs();
 		if(syslogs==null||syslogs.size()==0){

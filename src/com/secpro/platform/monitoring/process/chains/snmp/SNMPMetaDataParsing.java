@@ -23,7 +23,8 @@ public class SNMPMetaDataParsing implements IDataProcessChain {
 
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {
-		theLogger.debug("snmp dataProcess chain ID: " + getChainID());
+		theLogger.debug("snmp dataProcess chain ID: " + getChainID() + " name:"
+				+ this.getClass().getName());
 		if (rawData == null) {
 			theLogger.error("invalid rawData in SNMP data processing.");
 			return null;
@@ -40,10 +41,10 @@ public class SNMPMetaDataParsing implements IDataProcessChain {
 
 			return null;
 		}
-//		if (resultData.get(MetaDataConstant.TASK_CODE) == null) {
-//			theLogger.error("invalid taskCode in SNMP data processing.");
-//			return null;
-//		}
+		// if (resultData.get(MetaDataConstant.TASK_CODE) == null) {
+		// theLogger.error("invalid taskCode in SNMP data processing.");
+		// return null;
+		// }
 		Object result = resultData.get(MetaDataConstant.EXECUTE_RESULT);
 		if (result == null) {
 			theLogger.error("the snmp execute result are empty!");

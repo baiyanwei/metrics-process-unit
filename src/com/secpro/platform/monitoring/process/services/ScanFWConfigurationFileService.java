@@ -22,7 +22,7 @@ import com.secpro.platform.monitoring.process.dao.impl.FWFileDao;
 import com.secpro.platform.monitoring.process.dao.impl.ResDao;
 import com.secpro.platform.monitoring.process.entity.FWFileBean;
 import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
-@ServiceInfo(description = "process unit Scan FW Configuration File Service", configurationPath = "dpu/services/ScanFWConfigurationFileService/")
+@ServiceInfo(description = "process unit Scan FW Configuration File Service", configurationPath = "/app/mpu/services/ScanFWConfigurationFileService/")
 public class ScanFWConfigurationFileService implements IService{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(ScanFWConfigurationFileService.class);
 	@XmlElement(name = "intervalTime",type=Long.class, defaultValue ="0")
@@ -65,9 +65,11 @@ public class ScanFWConfigurationFileService implements IService{
 		};
 		//启动线程
 		scanFileThread.start();
+		theLogger.info("scanFWFileStart",intervalTime,scanFilePath,storageFilePath);
 		
 	}
 	private void scanFWConfigurationFile() {
+		theLogger.debug("execute scan FW configuration file");
 		File scanFileDir=new File(scanFilePath);
 		if(!scanFileDir.exists()||!scanFileDir.isDirectory()){
 			theLogger.error("scanFilePathError",scanFilePath);

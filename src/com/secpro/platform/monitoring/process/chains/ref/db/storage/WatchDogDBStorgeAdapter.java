@@ -14,13 +14,17 @@ import com.secpro.platform.monitoring.process.dao.IKpiDao;
 import com.secpro.platform.monitoring.process.dao.impl.KpiDao;
 import com.secpro.platform.monitoring.process.entity.KpiBean;
 import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
+
 /**
  * watchdog类型数据存储
+ * 
  * @author sxf
- *
+ * 
  */
-public class WatchDogDBStorgeAdapter extends DBStorage{
-	private static PlatformLogger theLogger = PlatformLogger.getLogger(WatchDogDBStorgeAdapter.class);
+public class WatchDogDBStorgeAdapter extends DBStorage {
+	private static PlatformLogger theLogger = PlatformLogger
+			.getLogger(WatchDogDBStorgeAdapter.class);
+
 	public WatchDogDBStorgeAdapter(Object storeData) {
 		super(storeData);
 		// TODO Auto-generated constructor stub
@@ -33,51 +37,52 @@ public class WatchDogDBStorgeAdapter extends DBStorage{
 			throw new PlatformException(
 					"invalid store data in watchdog database storage.");
 		}
-		if(!storeData.getClass().equals(HashMap.class)){
-			throw new PlatformException("need type of HashMap in watchdog database storage.");
+		if (!storeData.getClass().equals(HashMap.class)) {
+			throw new PlatformException(
+					"need type of HashMap in watchdog database storage.");
 		}
-		Map<String,Object> watchdogData=(Map<String,Object>)storeData;
-		Map<String,String> executeResult=(Map<String, String>) watchdogData.get(MetaDataConstant.WATCHDOG_EXECUTE_RESULT);
-		if(executeResult==null||executeResult.size()==0){
+		Map<String, Object> watchdogData = (Map<String, Object>) storeData;
+		Map<String, String> executeResult = (Map<String, String>) watchdogData
+				.get(MetaDataConstant.WATCHDOG_EXECUTE_RESULT);
+		if (executeResult == null || executeResult.size() == 0) {
 			theLogger.debug("the execute results of watchdog data are empty!");
 			return;
 		}
-		long resID=(Long) watchdogData.get("resID");
-		String cdate=DateFormatUtil.getNowDate();
-		Set<String> resultKeys=executeResult.keySet();
-		List<KpiBean> storeList=new ArrayList<KpiBean>();
-		for(String resultKey:resultKeys){
-			String resultValue=executeResult.get(resultKey);
-			if(Assert.isEmptyString(resultValue)){
+		long resID = (Long) watchdogData.get("resID");
+		String cdate = DateFormatUtil.getNowDate();
+		Set<String> resultKeys = executeResult.keySet();
+		List<KpiBean> storeList = new ArrayList<KpiBean>();
+		for (String resultKey : resultKeys) {
+			String resultValue = executeResult.get(resultKey);
+			if (Assert.isEmptyString(resultValue)) {
 				continue;
 			}
-			KpiBean watchdogBean=new KpiBean();
+			KpiBean watchdogBean = new KpiBean();
+			
+			long kpiID=getKpiID(resultKey,resID);
+			if(kpiID==0l){
+				continue;
+			}
 			watchdogBean.setCdate(cdate);
 			watchdogBean.setResID(resID);
+			watchdogBean.setKpiID(kpiID);
 			
-			String[] strORNumANDKpiID=getStrORNumAndKpiID(resultKey,resID);
-			watchdogBean.setKpiID(Integer.parseInt(strORNumANDKpiID[1]));
-			String strORNum=strORNumANDKpiID[0];
-			if("1".equals(strORNum)){
-				watchdogBean.setValueInt(Float.parseFloat(resultValue));
-			}
-			else{
-				watchdogBean.setValueStr(resultValue);
-			}
-			storeList.add(0,watchdogBean);
+			watchdogBean.setKpiValue(resultValue);
+			
+			storeList.add(watchdogBean);
 		}
 		watchdogStorage(storeList);
 		theLogger.debug("end storing data of watchdog!");
-		
+
 	}
 
-	private String[] getStrORNumAndKpiID(String kpiName,long resID) {
-		IKpiDao kpiDao=new KpiDao();
-		return kpiDao.kpiTypeAndKpiIDQuery(kpiName,resID);
+	private long getKpiID(String kpiName, long resID) {
+		IKpiDao kpiDao = new KpiDao();
+		return kpiDao.kpiIDQuery(kpiName, resID);
 	}
 
 	private void watchdogStorage(List<KpiBean> storeList) {
-		IKpiDao kpiDao=new KpiDao();
+		IKpiDao kpiDao = new KpiDao();
 		kpiDao.rawKpiSave(storeList);
 	}
 

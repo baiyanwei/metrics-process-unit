@@ -14,41 +14,45 @@ import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataConstant;
  * @author sxf
  *
  */
-public class WatchDogEvent implements IDataProcessChain{
-	private static PlatformLogger theLogger = PlatformLogger.getLogger(WatchDogEvent.class);
-	private int chainID=0;
-	//private static final String DISK_SPECIAL="disk usage";
+public class WatchDogEvent implements IDataProcessChain {
+	private static PlatformLogger theLogger = PlatformLogger
+			.getLogger(WatchDogEvent.class);
+	private int chainID = 0;
+
+	// private static final String DISK_SPECIAL="disk usage";
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {
-		theLogger.debug("watchdog dataProcess chain ID: "+getChainID());
-		if(rawData==null)
-		{
+		theLogger.debug("watchdog dataProcess chain ID: " + getChainID());
+		if (rawData == null) {
 			theLogger.error("invalid rawData in watchdog data processing.");
 			return null;
 		}
-		if(!rawData.getClass().equals(HashMap.class)){
-			theLogger.error("need type of HashMap in watchdog data processing.");
+		if (!rawData.getClass().equals(HashMap.class)) {
+			theLogger
+					.error("need type of HashMap in watchdog data processing.");
 			return null;
 		}
-		Map<String,Object> watchdogData=(Map<String,Object>)rawData;
-		Map<String,String> watchdogResult=(Map<String, String>) watchdogData.get(MetaDataConstant.WATCHDOG_EXECUTE_RESULT);
-		if(watchdogResult==null||watchdogResult.size()==0){
+		Map<String, Object> watchdogData = (Map<String, Object>) rawData;
+		Map<String, String> watchdogResult = (Map<String, String>) watchdogData
+				.get(MetaDataConstant.WATCHDOG_EXECUTE_RESULT);
+		if (watchdogResult == null || watchdogResult.size() == 0) {
 			theLogger.error("watchdog result is empty");
 			return null;
 		}
-		Set<String> resultKeys=watchdogResult.keySet();
-		long resID=(Long) watchdogData.get("resID");
-		for(String resultName:resultKeys){
-			String value=watchdogResult.get(resultName);
-			//判断是否会产生事件以及恢复事件等
-			EventAndAlarm.JudgeGenerateAndRecoveryEvent(resID, resultName, value);
+		Set<String> resultKeys = watchdogResult.keySet();
+		long resID = (Long) watchdogData.get("resID");
+		for (String resultName : resultKeys) {
+			String value = watchdogResult.get(resultName);
+			// 判断是否会产生事件以及恢复事件等
+			EventAndAlarm.JudgeGenerateAndRecoveryEvent(resID, resultName,
+					value);
 		}
 		return watchdogData;
 	}
 
 	@Override
 	public void setChainID(int chainID) {
-		this.chainID=chainID;
+		this.chainID = chainID;
 	}
 
 	@Override

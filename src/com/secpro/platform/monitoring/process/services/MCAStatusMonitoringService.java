@@ -9,6 +9,7 @@ import com.secpro.platform.core.services.ServiceInfo;
 import com.secpro.platform.core.utils.Assert;
 import com.secpro.platform.log.utils.PlatformLogger;
 import com.secpro.platform.monitoring.process.chains.ref.event.EventAndAlarm;
+import com.secpro.platform.monitoring.process.chains.ref.event.EventTypeNameConstant;
 import com.secpro.platform.monitoring.process.dao.IKpiDao;
 import com.secpro.platform.monitoring.process.dao.impl.KpiDao;
 import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
@@ -18,7 +19,7 @@ import com.secpro.platform.monitoring.process.utils.DateFormatUtil;
  * @author sxf
  *
  */
-@ServiceInfo(description = "process unit MCA status monitoring service", configurationPath = "dpu/services/MCAStatusMonitoringService/")
+@ServiceInfo(description = "process unit MCA status monitoring service", configurationPath = "/app/mpu/services/MCAStatusMonitoringService/")
 public class MCAStatusMonitoringService implements IService{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(MCAStatusMonitoringService.class);
 	@XmlElement(name = "intervalTime",type=Long.class, defaultValue ="0")
@@ -28,7 +29,7 @@ public class MCAStatusMonitoringService implements IService{
 	private Thread monitorThread;
 	private Map<Long,String> mcaLastReceiveDate;
 	//mca异常产生事件名称
-	private final String MCA_STATUS_ERROR_EVENT_NAME="mca error";
+	//private final String MCA_STATUS_ERROR_EVENT_NAME="mca error";
 	@Override
 	public void start() throws Exception {
 		startUpMCAStatusMonitoring();
@@ -59,9 +60,11 @@ public class MCAStatusMonitoringService implements IService{
 		};
 		//启动线程
 		monitorThread.start();
+		theLogger.info("mcaStatusMonitorStart",intervalTime,overTime);
 		
 	}
 	private void mcaStatusMonitoring() {
+		theLogger.debug("execute mca status monitoring");
 		Map<Long,String> mcaResReceiveDate=getMCALastReceiveDate();
 		if(mcaResReceiveDate==null||mcaResReceiveDate.size()==0){
 			theLogger.error("all of MCA last time to receive data are empty!");
@@ -75,6 +78,7 @@ public class MCAStatusMonitoringService implements IService{
 					mcaResReceiveDate.put(resID, DateFormatUtil.getNowDate());
 				}else{
 					judgeMCAStatus(nowTimeMillis, DateFormatUtil.getDateTimeMillis(receiveDate),resID);
+					mcaResReceiveDate.put(resID, receiveDate);
 				}
 			}else{
 				judgeMCAStatus(nowTimeMillis, DateFormatUtil.getDateTimeMillis(receiveDate),resID);
@@ -91,9 +95,9 @@ public class MCAStatusMonitoringService implements IService{
 	 */
 	private void judgeMCAStatus(long nowTime,long lastTime,long resID){
 		if(nowTime-lastTime>overTime){
-			EventAndAlarm.JudgeGenerateAndRecoveryEvent(resID, MCA_STATUS_ERROR_EVENT_NAME, MCA_STATUS_ERROR_EVENT_NAME);
+			EventAndAlarm.JudgeGenerateAndRecoveryEvent(resID, EventTypeNameConstant.EVENT_TYEP_NAME_MCA_ERROR, EventTypeNameConstant.EVENT_TYEP_NAME_MCA_ERROR);
 		}else{
-			EventAndAlarm.isRecoveryEvent(resID, MCA_STATUS_ERROR_EVENT_NAME);
+			EventAndAlarm.isRecoveryEvent(resID, EventTypeNameConstant.EVENT_TYEP_NAME_MCA_ERROR);
 		}
 	}
 	private Map<Long, String> getMCALastReceiveDate() {

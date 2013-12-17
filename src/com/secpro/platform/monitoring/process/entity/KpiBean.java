@@ -8,8 +8,8 @@ public class KpiBean {
 	private long resID;
 	private long kpiID;
 	private String cdate;
-	private String valueStr;
-	private float valueInt;
+	private String kpiValue;
+	//private float valueInt;
 	
 	public long getResID() {
 		return resID;
@@ -29,16 +29,11 @@ public class KpiBean {
 	public void setCdate(String cdate) {
 		this.cdate = cdate;
 	}
-	public String getValueStr() {
-		return valueStr;
+	public String getKpiValue() {
+		return kpiValue;
 	}
-	public void setValueStr(String valueStr) {
-		this.valueStr = valueStr;
+	public void setKpiValue(String kpiValue) {
+		this.kpiValue = kpiValue;
 	}
-	public float getValueInt() {
-		return valueInt;
-	}
-	public void setValueInt(float valueInt) {
-		this.valueInt = valueInt;
-	}
+	
 }

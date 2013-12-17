@@ -13,31 +13,33 @@ import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataParsing;
  * @author sxf
  *
  */
-public class WatchDogMetaDataParsing implements IDataProcessChain{
-	private static PlatformLogger theLogger = PlatformLogger.getLogger(WatchDogMetaDataParsing.class);
-	private int chainID=0;
+public class WatchDogMetaDataParsing implements IDataProcessChain {
+	private static PlatformLogger theLogger = PlatformLogger
+			.getLogger(WatchDogMetaDataParsing.class);
+	private int chainID = 0;
+
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {
-		theLogger.debug("watchdog dataProcess chain ID: "+getChainID());
-		if(rawData==null)
-		{
+		theLogger.debug("watchdog dataProcess chain ID: " + getChainID());
+		if (rawData == null) {
 			theLogger.error("invalid rawData in watchdog data processing.");
 			return null;
 		}
-		if(rawData.getClass().equals(JSONObject.class)==false)
-		{
-			theLogger.error("need type of jsonObject in watchdog data processing.");
+		if (rawData.getClass().equals(JSONObject.class) == false) {
+			theLogger
+					.error("need type of jsonObject in watchdog data processing.");
 			return null;
 		}
-		JSONObject rawDataJson=(JSONObject)rawData;
-		//解析元数据
-		Map<String,Object> result=MetaDataParsing.getWatchdogRelatedData(rawDataJson);
+		JSONObject rawDataJson = (JSONObject) rawData;
+		// 解析元数据
+		Map<String, Object> result = MetaDataParsing
+				.getWatchdogRelatedData(rawDataJson);
 		return result;
 	}
 
 	@Override
 	public void setChainID(int chainID) {
-		this.chainID=chainID;
+		this.chainID = chainID;
 	}
 
 	@Override

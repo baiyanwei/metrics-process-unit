@@ -1,16 +1,20 @@
 package com.secpro.platform.monitoring.process.chains.ref.db.storage;
+
 /**
  * 数据库存储
+ * 
  * @author sxf
- *
+ * 
  */
-public abstract class DBStorage extends Thread{
-	private Object storeData=null;
-	public DBStorage(Object storeData){
-		this.storeData=storeData;
+public abstract class DBStorage extends Thread {
+	private Object storeData = null;
+
+	public DBStorage(Object storeData) {
+		this.storeData = storeData;
 	}
-	public void run(){
-		if(storeData!=null){
+
+	public void run() {
+		if (storeData != null) {
 			try {
 				dbStorage(storeData);
 			} catch (Exception e) {
@@ -19,5 +23,6 @@ public abstract class DBStorage extends Thread{
 			}
 		}
 	}
-	abstract public void dbStorage(Object storeData)throws Exception;
+
+	abstract public void dbStorage(Object storeData) throws Exception;
 }

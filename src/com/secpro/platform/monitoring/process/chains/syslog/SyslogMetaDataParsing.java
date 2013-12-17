@@ -14,31 +14,36 @@ import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataParsing;
  * @author sxf
  *
  */
-public class SyslogMetaDataParsing implements IDataProcessChain{
-	private static PlatformLogger theLogger = PlatformLogger.getLogger(SyslogMetaDataParsing.class);
-	private int chainID=0;
+public class SyslogMetaDataParsing implements IDataProcessChain {
+	private static PlatformLogger theLogger = PlatformLogger
+			.getLogger(SyslogMetaDataParsing.class);
+	private int chainID = 0;
+
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {
-		theLogger.debug("syslog dataProcess chain ID: "+getChainID());
-		if(rawData==null)
-		{
+		theLogger.debug("syslog dataProcess chain ID: " + getChainID()
+				+ " name:" + this.getClass().getName());
+		if (rawData == null) {
 			theLogger.error("invalid rawData in syslog data processing.");
 			return null;
 		}
-		if(rawData.getClass().equals(JSONObject.class)==false)
-		{
-			theLogger.error("need type of jsonObject in syslog data processing.");
+		if (rawData.getClass().equals(JSONObject.class) == false) {
+			theLogger
+					.error("need type of jsonObject in syslog data processing.");
 			return null;
 		}
-		JSONObject rawDataJson=(JSONObject)rawData;
-		List<Map<String,Object>> resultData=MetaDataParsing.getSyslogRelatedData(rawDataJson);
+		JSONObject rawDataJson = (JSONObject) rawData;
+		List<Map<String, Object>> resultData = MetaDataParsing
+				.getSyslogRelatedData(rawDataJson);
 		return resultData;
 	}
+
 	@Override
 	public void setChainID(int chainID) {
-		this.chainID=chainID;
-		
+		this.chainID = chainID;
+
 	}
+
 	@Override
 	public int getChainID() {
 		// TODO Auto-generated method stub

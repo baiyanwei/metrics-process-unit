@@ -7,7 +7,7 @@ import com.secpro.platform.core.services.IService;
 import com.secpro.platform.core.services.ServiceInfo;
 import com.secpro.platform.core.utils.Assert;
 import com.secpro.platform.log.utils.PlatformLogger;
-@ServiceInfo(description = "publish webservice", configurationPath = "dpu/services/PublishWebService/")
+@ServiceInfo(description = "publish webservice", configurationPath = "/app/mpu/services/PublishWebService/")
 public class PublishWebService implements IService{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(PublishWebService.class);
 	@XmlElement(name = "publishURL", defaultValue ="")

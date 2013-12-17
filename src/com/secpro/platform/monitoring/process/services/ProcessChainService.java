@@ -27,7 +27,7 @@ import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataParsing;
  * @author sxf
  *
  */
-@ServiceInfo(description = "process unit chain service", configurationPath = "dpu/services/ProcessChainService/")
+@ServiceInfo(description = "process unit chain service", configurationPath = "/app/mpu/services/ProcessChainService/")
 public class ProcessChainService implements IService{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(ProcessChainService.class);
 	@XmlElement(name = "dataTypes", defaultValue ="ssh,telnet,snmp,syslog")
@@ -140,7 +140,7 @@ public class ProcessChainService implements IService{
 			}
 			return path;
 		}
-		return "dpu/services/ProcessChainService/";
+		return "/app/mpu/services/ProcessChainService/";
 	}
 	/**
 	 * 根据数据类型，调用相应的数据处理链条，完成数据处理要求
@@ -175,7 +175,10 @@ public class ProcessChainService implements IService{
 			else
 			{
 				//启动线程，处理error类型数据
-				ErrorDataProcess errorProcessThread=new ErrorDataProcess(dataObj);
+				JSONTokener parser = new JSONTokener(dataObj.toString());
+				JSONObject jsonObj=new JSONObject(parser);
+				jsonObj.put(MetaDataConstant.META_CITYCODE_PROPERTY_NAME, cityCode);
+				ErrorDataProcess errorProcessThread=new ErrorDataProcess(jsonObj);
 				errorProcessThread.start();
 				return;
 			}

@@ -15,7 +15,7 @@ import com.secpro.platform.monitoring.process.dao.impl.SyslogDao;
  * @author sxf
  *
  */
-@ServiceInfo(description = "syslog standard rule service", configurationPath = "dpu/services/SyslogStandardRuleService/")
+@ServiceInfo(description = "syslog standard rule service", configurationPath = "/app/mpu/services/SyslogStandardRuleService/")
 public class SyslogStandardRuleService implements IService{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(SyslogStandardRuleService.class);
 	//存储标准化后元素与数据库表字段映射关系
@@ -49,7 +49,9 @@ public class SyslogStandardRuleService implements IService{
 	private void loadStandardRule(){
 		ISyslogDao syslogDao=new SyslogDao();
 		synchronized(_ruleMapping){ 
+			theLogger.debug("loadRule");
 			syslogDao.syslogRuleMappingQuery(_ruleMapping);
+			
 		}
 	}
 	/**
@@ -96,6 +98,7 @@ public class SyslogStandardRuleService implements IService{
 	public void loadDataToDBMapping(){
 		ISyslogDao syslogDao=new SyslogDao();
 		synchronized(_dataDBMapping){ 
+			theLogger.debug("loadDBMapping");
 			syslogDao.syslogDBMappingQuery(_dataDBMapping);
 		}
 	}

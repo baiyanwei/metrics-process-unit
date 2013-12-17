@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +16,7 @@ import com.secpro.platform.monitoring.process.chains.ref.standard.StandardUtil;
 import com.secpro.platform.monitoring.process.chains.ref.task.TaskCompleted;
 import com.secpro.platform.monitoring.process.dao.IKpiDao;
 import com.secpro.platform.monitoring.process.dao.impl.KpiDao;
-import com.secpro.platform.monitoring.process.utils.CollectionUtil;
+import com.secpro.platform.monitoring.process.utils.CollectionRemoveUtil;
 
 /**
  * 对SNMP数据执行结果进行标准化处理 并更新任务状态等相关信息
@@ -28,13 +29,15 @@ public class SNMPStandard implements IDataProcessChain {
 			.getLogger(SNMPStandard.class);
 	private int chainID = 0;
 
-	private final String TIMEOUT="timeout";
+	private final String TIMEOUT = "timeout";
 
-	private final String NOSUCHOBJECT="nosuchobject";
+	private final String NOSUCHOBJECT = "nosuchobject";
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object dataProcess(Object rawData) throws Exception {
-		theLogger.debug("snmp dataProcess chain ID: " + getChainID());
+		theLogger.debug("snmp dataProcess chain ID: " + getChainID() + " name:"
+				+ this.getClass().getName());
 		if (rawData == null) {
 			theLogger.error("invalid rawData in SNMP data processing.");
 			return null;
@@ -44,15 +47,15 @@ public class SNMPStandard implements IDataProcessChain {
 			return null;
 		}
 		Map<String, Object> snmpData = (Map<String, Object>) rawData;
-//		String taskCode = (String) snmpData.get(MetaDataConstant.TASK_CODE);
-//		if (Assert.isEmptyString(taskCode)) {
-//			theLogger.error("the task code of snmp data is empty");
-//			return null;
-//		}
-//		String executeDate = (String) snmpData
-//				.get(MetaDataConstant.EXECUTE_DATE);
+		// String taskCode = (String) snmpData.get(MetaDataConstant.TASK_CODE);
+		// if (Assert.isEmptyString(taskCode)) {
+		// theLogger.error("the task code of snmp data is empty");
+		// return null;
+		// }
+		// String executeDate = (String) snmpData
+		// .get(MetaDataConstant.EXECUTE_DATE);
 		// 更新任务状态
-		setTaskStatus(snmpData,TaskCompleted.TASK_SUCCESS);
+		setTaskStatus(snmpData, TaskCompleted.TASK_SUCCESS);
 		String cityCode = (String) snmpData.get(MetaDataConstant.CITY_CODE);
 		String targetIP = (String) snmpData.get(MetaDataConstant.TARGET_IP);
 		if (Assert.isEmptyString(cityCode) || Assert.isEmptyString(targetIP)) {
@@ -69,28 +72,26 @@ public class SNMPStandard implements IDataProcessChain {
 		Map<String, String[]> kpiIDAndRules = loadKpiIDAndRule(cityCode,
 				targetIP);
 		if (kpiIDAndRules == null || kpiIDAndRules.size() == 0) {
-			theLogger.error("kpi id or snmp rule is empty.");
+			theLogger.error("kpi id is empty.");
 			return null;
 		}
-		List deleteList = new ArrayList();
-		for (String snmpKey : resultMapping.keySet()) {
+		Map<String,String> standardResult = new HashMap<String,String>();
+		Set<String> keySet=resultMapping.keySet();
+		for (String snmpKey : keySet) {
 			if (Assert.isEmptyString(snmpKey)) {
-				deleteList.add(snmpKey);
 				continue;
 			}
 			String snmpValue = resultMapping.get(snmpKey);
 			if (Assert.isEmptyString(snmpValue)) {
-				resultMapping.put(snmpKey, NOSUCHOBJECT);
+				snmpValue = NOSUCHOBJECT;
 			}
 			String[] idAndRule = kpiIDAndRules.get(snmpKey);
 			if (idAndRule == null || idAndRule.length != 2
 					|| Assert.isEmptyString(idAndRule[0])) {
-				deleteList.add(snmpKey);
 				theLogger.debug("haven't kpi id of the snmp data");
 				continue;
 			}
-			if (!NOSUCHOBJECT.equals(snmpValue)
-					&& !TIMEOUT.equals(snmpValue)
+			if (!NOSUCHOBJECT.equals(snmpValue) && !TIMEOUT.equals(snmpValue)
 					&& !Assert.isEmptyString(idAndRule[1])) {
 				// 对snmp执行结果进行标准化
 				snmpValue = snmpStandard(snmpValue, idAndRule[1]);
@@ -99,12 +100,12 @@ public class SNMPStandard implements IDataProcessChain {
 				}
 			}
 			// 将kpiID与执行结果对应，kpiID为String类型
-			resultMapping.put(idAndRule[0], snmpValue);
-			deleteList.add(snmpKey);
+			standardResult.put(idAndRule[0], snmpValue);
 		}
-		if (deleteList.size() > 0) {
-			CollectionUtil.mapRemove(resultMapping, deleteList);
+		if(standardResult.size()==0){
+			return null;
 		}
+		snmpData.put(MetaDataConstant.EXECUTE_RESULT, standardResult);
 		return snmpData;
 	}
 
@@ -226,7 +227,7 @@ public class SNMPStandard implements IDataProcessChain {
 	 * @param taskCode
 	 * @param executeDate
 	 */
-	private void setTaskStatus(Map<String,Object> data,int executeResult) {
+	private void setTaskStatus(Map<String, Object> data, int executeResult) {
 		Thread setTaskStatus = new TaskCompleted(data, executeResult);
 		setTaskStatus.start();
 	}
