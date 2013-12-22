@@ -47,9 +47,9 @@ public class ContainAndConflictDBStorageAdapter extends DBStorage {
 					.debug("the execute results of contain and conflict data are empty!");
 			return;
 		}
-		long resID = (Long) containAndConflictData.get("resID");
+		long resID = (Long) containAndConflictData.get(MetaDataConstant.RESOURCE_ID);
 		String taskCode = (String) containAndConflictData
-				.get(MetaDataConstant.TASK_CODE);
+				.get(MetaDataConstant.SCHEDULE_ID);
 		String cdate = DateFormatUtil.getNowDate();
 		StringBuilder containAndConflictInfo = new StringBuilder();
 		if (Assert.isEmptyString(executeResult[0])) {

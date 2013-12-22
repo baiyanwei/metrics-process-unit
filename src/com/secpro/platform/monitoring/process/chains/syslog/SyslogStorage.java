@@ -46,6 +46,10 @@ public class SyslogStorage implements IDataProcessChain {
 					.error("need type of ArrayList in syslog data processing.");
 			return null;
 		}
+		List<Map<String, Object>> syslogDatas = (List) rawData;
+		if(syslogDatas.size()==0){
+			return null;
+		}
 		SyslogStandardRuleService syslogRuleService = ServiceHelper
 				.findService(SyslogStandardRuleService.class);
 		if (syslogRuleService == null) {
@@ -55,34 +59,25 @@ public class SyslogStorage implements IDataProcessChain {
 		}
 		Map<String, String> dataDBMapping = syslogRuleService
 				.get_dataDBMapping();
-		if (dataDBMapping == null | dataDBMapping.size() == 0) {
+		if (dataDBMapping == null || dataDBMapping.size() == 0) {
 			theLogger
 					.error("syslog storage need the data and database Mapping.");
 			return null;
 		}
-		List<Map<String, Object>> syslogDatas = (List) rawData;
+		
 		List<SyslogBean> syslogBeanList = new ArrayList<SyslogBean>();
 		List<Map<String, Object>> deleteList = new ArrayList();
 		for (Map<String, Object> syslogData : syslogDatas) {
 
-			String cityCode = (String) syslogData
-					.get(MetaDataConstant.CITY_CODE);
-			String targetIP = (String) syslogData
-					.get(MetaDataConstant.TARGET_IP);
-			if (Assert.isEmptyString(cityCode)
-					|| Assert.isEmptyString(targetIP)) {
-				deleteList.add(syslogData);
-				theLogger.error("city code or target IP is empty!");
-				continue;
-			}
-			long resID = getResID(cityCode, targetIP);
+			long resID=(Long) syslogData
+					.get(MetaDataConstant.RESOURCE_ID);
 			if (resID == 0) {
 				deleteList.add(syslogData);
 				theLogger.error("resource id is empty!");
 				continue;
 			}
 			// 查询设备类型描述
-			String typeDes = getTypeName(cityCode, targetIP);
+			String typeDes = getTypeName(resID);
 			Map<String, String> resultMapping = (Map<String, String>) syslogData
 					.get(MetaDataConstant.EXECUTE_RESULT);
 			String rdate = (String) syslogData
@@ -111,17 +106,6 @@ public class SyslogStorage implements IDataProcessChain {
 		return syslogDatas;
 	}
 
-	/**
-	 * 查询resID资源ID
-	 * 
-	 * @param cityCode
-	 * @param targetIP
-	 * @return
-	 */
-	private long getResID(String cityCode, String targetIP) {
-		IResourceDao resDao = new ResDao();
-		return resDao.ResIDQuery(cityCode, targetIP);
-	}
 
 	/**
 	 * 查询设备类型名称描述
@@ -130,9 +114,9 @@ public class SyslogStorage implements IDataProcessChain {
 	 * @param targetIP
 	 * @return
 	 */
-	private String getTypeName(String cityCode, String targetIP) {
-		IDeviceDao comDevDao = new DeviceDao();
-		return comDevDao.typeNameQuery(cityCode, targetIP);
+	private String getTypeName(long resID) {
+		IDeviceDao devDao = new DeviceDao();
+		return devDao.typeNameQuery(resID);
 	}
 
 	@Override

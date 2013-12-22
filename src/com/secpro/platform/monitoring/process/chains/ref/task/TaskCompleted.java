@@ -35,7 +35,7 @@ public class TaskCompleted extends Thread {
 		if (_data == null || _data.size() == 0) {
 			return;
 		}
-		String taskCode = (String) _data.get(MetaDataConstant.TASK_CODE);
+		String taskCode = (String) _data.get(MetaDataConstant.SCHEDULE_ID);
 		if (Assert.isEmptyString(taskCode)) {
 			return;
 		}

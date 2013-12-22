@@ -234,25 +234,19 @@ public class EventAndAlarm {
 						String message = getEventMessage(resID, eventRuleBean,value);
 						theLogger.debug("equalOccurred",resID);
 						String cdate = DateFormatUtil.getNowDate();
-						changeEvent(eventBean.getId(), message, cdate,
-								eventLevel);
+						changeEvent(eventBean.getId(), message, cdate,eventLevel);
 						eventBean.setMessage(message);
 						eventBean.setCdate(cdate);
-						if (REPEAT_ALARM.equals(eventRuleBean.getRepeat())
-								&& GENERATE_ALARM.equals(eventRuleBean
-										.getSetMsg())) {
+						if (REPEAT_ALARM.equals(eventRuleBean.getRepeat())&& GENERATE_ALARM.equals(eventRuleBean.getSetMsg())) {
 							theLogger.debug("Repeat the alarm");
 							generateAlarm(eventBean, eventRuleBean.getId());
 						}
 					} else {
 						// 如果事件级别与已产生事件级别不同，则更新已产生事件的相应信息
-						theLogger
-								.debug("noEqualOccurred",resID);
-						String message = getEventMessage(resID, eventRuleBean,
-								value);
+						theLogger.debug("noEqualOccurred",resID);
+						String message = getEventMessage(resID, eventRuleBean,value);
 						String cdate = DateFormatUtil.getNowDate();
-						changeEvent(eventBean.getId(), message, cdate,
-								eventLevel);
+						changeEvent(eventBean.getId(), message, cdate,eventLevel);
 						eventBean.setMessage(message);
 						eventBean.setCdate(cdate);
 						eventBean.setEventLevel(eventLevel);
@@ -276,7 +270,7 @@ public class EventAndAlarm {
 	private static void changeEvent(long eventID, String message, String cdate,
 			int eventLevel) {
 		IEventDao eventDao = new EventDao();
-		eventDao.eventMessageUpdate(eventID, message);
+		eventDao.eventMessageUpdate(eventID, message,eventLevel);
 
 	}
 
@@ -569,7 +563,7 @@ public class EventAndAlarm {
 		for (EventRuleBean eventRuleB : eventRules) {
 			if (eventRuleB.getEnentLevel() == eventLevel) {
 				if (RECOVER_SET_MSG.equals(eventRuleB.getRecoverSetMsg()))
-					;
+					
 				recoverSendMsg = true;
 				eventRuleID = eventRuleB.getId();
 				break;

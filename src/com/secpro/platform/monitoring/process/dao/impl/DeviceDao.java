@@ -17,8 +17,8 @@ public class DeviceDao implements IDeviceDao, IEventMsgDao {
 			.getLogger(DeviceDao.class);
 
 	@Override
-	public String typeNameQuery(String cityCode, String resIP) {
-		if (Assert.isEmptyString(cityCode) || Assert.isEmptyString(resIP)) {
+	public String typeNameQuery(long resID) {
+		if (resID==0l) {
 			return null;
 		}
 		Connection conn = DBUtil.getConnection();
@@ -26,8 +26,7 @@ public class DeviceDao implements IDeviceDao, IEventMsgDao {
 		ResultSet result = null;
 		try {
 			statement = conn.createStatement();
-			String sql = "select t1.type_name from sys_dev_type t1,sys_res_obj t2 where t1.type_code=t2.type_code and t2.city_code='"
-					+ cityCode + "' and t2.res_ip='" + resIP + "'";
+			String sql = "select t1.type_name from sys_dev_type t1,sys_res_obj t2 where t1.type_code=t2.type_code and t2.id="+resID;
 			result = statement.executeQuery(sql);
 			if (result.next()) {
 				return result.getString(1);

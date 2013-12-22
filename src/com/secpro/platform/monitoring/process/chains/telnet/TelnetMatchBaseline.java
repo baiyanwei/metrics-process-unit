@@ -55,19 +55,19 @@ public class TelnetMatchBaseline implements IDataProcessChain {
 			return null;
 		}
 		Map telnetData = (Map) rawData;
-		long resID = (Long) telnetData.get("resID");
+		long resID = (Long) telnetData.get(MetaDataConstant.RESOURCE_ID);
 		if (resID == 0) {
 			theLogger.error("resource id is empty!");
 			return null;
 		}
 		List<BaselineBean> baselineValues = getBaselineAndRule(resID);
-		if (baselineValues == null) {
+		if (Assert.isEmptyCollection(baselineValues)) {
 			theLogger.debug("This model does not set the baseline");
 		} else {
 			List<BaselineMatchBean> matchValues = new ArrayList<BaselineMatchBean>();
 			String cdate = DateFormatUtil.getNowDate();
 			String taskCode = (String) telnetData
-					.get(MetaDataConstant.TASK_CODE);
+					.get(MetaDataConstant.SCHEDULE_ID);
 			String[] executeResult = (String[]) telnetData
 					.get(MetaDataConstant.EXECUTE_RESULT);
 			int totalScore = 0;

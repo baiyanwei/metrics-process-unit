@@ -46,7 +46,7 @@ public class SNMPEvent implements IDataProcessChain {
 			theLogger.debug("snmp result is empty");
 			return null;
 		}
-		long resID = (Long) snmpData.get("resID");
+		long resID = (Long) snmpData.get(MetaDataConstant.RESOURCE_ID);
 		int timeoutFlag = 0;
 		int nosuchobjceFlag = 0;
 		for (String resultKpiID : snmpResult.keySet()) {

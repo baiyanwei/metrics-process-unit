@@ -48,7 +48,7 @@ public class WatchDogDBStorgeAdapter extends DBStorage {
 			theLogger.debug("the execute results of watchdog data are empty!");
 			return;
 		}
-		long resID = (Long) watchdogData.get("resID");
+		long resID = (Long) watchdogData.get(MetaDataConstant.RESOURCE_ID);
 		String cdate = DateFormatUtil.getNowDate();
 		Set<String> resultKeys = executeResult.keySet();
 		List<KpiBean> storeList = new ArrayList<KpiBean>();

@@ -48,26 +48,18 @@ public class SSHStorageAndMatch implements IDataProcessChain {
 			return null;
 		}
 		Map sshData = (Map) rawData;
-
-		String cityCode = (String) sshData.get(MetaDataConstant.CITY_CODE);
-		String targetIP = (String) sshData.get(MetaDataConstant.TARGET_IP);
-		if (Assert.isEmptyString(cityCode) || Assert.isEmptyString(targetIP)) {
-			theLogger.error("city code or target IP is empty!");
-			return null;
-		}
-		long resID = getResID(cityCode, targetIP);
+		long resID = (Long) sshData.get(MetaDataConstant.RESOURCE_ID);
 		if (resID == 0) {
 			theLogger.error("resource id is empty!");
 			return null;
 		}
-		sshData.put("resID", resID);
 		String[] sshStandardResult = (String[]) sshData
 				.get(MetaDataConstant.EXECUTE_RESULT);
 		if (sshStandardResult == null) {
 			theLogger.error("the standard data of ssh are empty!");
 			return null;
 		}
-		String taskCode = (String) sshData.get(MetaDataConstant.TASK_CODE);
+		String taskCode = (String) sshData.get(MetaDataConstant.SCHEDULE_ID);
 		if (Assert.isEmptyString(taskCode)) {
 			theLogger.error("invalid taskCode in SSH data processing.");
 			return null;
@@ -77,13 +69,13 @@ public class SSHStorageAndMatch implements IDataProcessChain {
 					.get(MetaDataConstant.EXECUTE_DATE);
 			taskCode = taskCode + "_c" + executeDate;
 		}
-		sshData.put(MetaDataConstant.TASK_CODE, taskCode);
+		sshData.put(MetaDataConstant.SCHEDULE_ID, taskCode);
 		// 调用ssh存储数据库方法，将数据存入数据库中
 		sshDBStorage(sshData);
 		// 对标准化后的策略信息进行包含和冲突检查，并根据结果判断事件的产生与恢复
 		String[] containAndConflictResult = policyContainAndConflict(
 				sshStandardResult[1],
-				loadContainAndConflictRule(cityCode, targetIP));
+				loadContainAndConflictRule(resID));
 		if (containAndConflictResult != null) {
 			if (!Assert.isEmptyString(containAndConflictResult[0])) {
 				EventAndAlarm.JudgeGenerateAndRecoveryEvent(resID,
@@ -118,10 +110,9 @@ public class SSHStorageAndMatch implements IDataProcessChain {
 	 * @param targetIP
 	 * @return
 	 */
-	private String loadContainAndConflictRule(String cityCode, String targetIP) {
+	private String loadContainAndConflictRule(long resID) {
 		IConfigAndPolicyDao configAndPolicyDao = new ConfigAndPolicyDao();
-		return configAndPolicyDao.containAndConflictRuleQuery(cityCode,
-				targetIP);
+		return configAndPolicyDao.containAndConflictRuleQuery(resID);
 
 	}
 
@@ -143,19 +134,6 @@ public class SSHStorageAndMatch implements IDataProcessChain {
 		return containAndConflict.policyContainAndConflict();
 
 	}
-
-	/**
-	 * 查询资源ID
-	 * 
-	 * @param cityCode
-	 * @param targetIP
-	 * @return
-	 */
-	private long getResID(String cityCode, String targetIP) {
-		IResourceDao resDao = new ResDao();
-		return resDao.ResIDQuery(cityCode, targetIP);
-	}
-
 	/**
 	 * 存储标准化后的数据
 	 * 
@@ -176,9 +154,9 @@ public class SSHStorageAndMatch implements IDataProcessChain {
 	private void containAndConflictDBStorage(String[] result, long resID,
 			String taskCode) {
 		Map<String, Object> value = new HashMap<String, Object>();
-		value.put("resID", resID);
+		value.put(MetaDataConstant.RESOURCE_ID, resID);
 		value.put(MetaDataConstant.EXECUTE_RESULT, result);
-		value.put(MetaDataConstant.TASK_CODE, taskCode);
+		value.put(MetaDataConstant.SCHEDULE_ID, taskCode);
 		DBStorage dbStorage = new ContainAndConflictDBStorageAdapter(value);
 		dbStorage.start();
 	}

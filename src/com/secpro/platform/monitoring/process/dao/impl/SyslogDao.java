@@ -187,12 +187,12 @@ public class SyslogDao implements ISyslogDao{
 					
 					sqlBeforePart.append(","+dbMapping);
 					sqlAfterPart.append(",'"+value+"'");
-					if("srcip".equals(dbMapping)){
+					if("src_ip".equals(dbMapping)){
 						sqlBeforePart.append(","+"src_ip_num");
 						sqlAfterPart.append(","+StandardUtil.ipToLong(value));
 						
 					}
-					if("dstip".equals(dbMapping)){
+					if("dst_ip".equals(dbMapping)){
 						sqlBeforePart.append(","+"dst_ip_num");
 						sqlAfterPart.append(","+StandardUtil.ipToLong(value));
 						

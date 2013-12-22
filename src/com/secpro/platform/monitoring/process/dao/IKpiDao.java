@@ -16,7 +16,7 @@ public interface IKpiDao {
 	 * @param resIP
 	 * @return
 	 */
-	public Map<String, String[]> kpiIDAndRuleQuery(String cityCode,String resIP);
+	public Map<String, String[]> kpiIDAndRuleQuery(long resID);
 
 	//public String kpiTypeQuery(long kpiID);
 	/**

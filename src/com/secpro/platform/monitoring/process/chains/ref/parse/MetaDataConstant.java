@@ -10,7 +10,8 @@ public class MetaDataConstant {
 
 	// public static final String META_TIMESTAMP_PROPERTY_NAME = "timestamp";
 	// 元数据中任务调度ID
-	public static final String META_MONITOR_ID_PROPERTY_NAME = "sid";
+	public static final String META_SCHEDULE_ID_PROPERTY_NAME = "sid";
+	public static final String META_TASK_ID_PROPERTY_NAME = "tid";
 	// 元数据结果体
 	public static final String META_BODY_PROPERTY_NAME = "body";
 	// public static final String META_MID_PROPERTY_NAME = "mid";
@@ -27,7 +28,8 @@ public class MetaDataConstant {
 	public static final String META_CITYCODE_PROPERTY_NAME = "city_code";
 	public static final String CITY_CODE = "cityCode";
 	// 解析后任务调度ID
-	public static final String TASK_CODE = "taskCode";
+	public static final String SCHEDULE_ID = "scheduleID";
+	public static final String TASK_ID = "taskID";
 	// 解析后目的IP地址
 	public static final String TARGET_IP = "targetIP";
 	public static final String ERROR_DESCRIPTION = "errorDesc";
@@ -63,4 +65,6 @@ public class MetaDataConstant {
 	public static final String WATCHDOG_LOG_ERROR = "mca_log_error";
 	public static final String WATCHDOG_PROCESS = "mca_process_exist";
 	public static final String WATCHDOG_EXECUTE_RESULT = "executeResult";
+	
+	public static final String RESOURCE_ID="resID";
 }

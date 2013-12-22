@@ -35,20 +35,7 @@ public class WatchDogStorage implements IDataProcessChain {
 			return null;
 		}
 		Map<String, Object> watchdogData = (Map<String, Object>) rawData;
-		String cityCode = (String) watchdogData
-				.get(MetaDataConstant.WATCHDOG_CITY_CODE);
-		String targetIP = (String) watchdogData
-				.get(MetaDataConstant.WATCHDOG_IP);
-		if (Assert.isEmptyString(cityCode) || Assert.isEmptyString(targetIP)) {
-			theLogger.error("city code or target IP is empty!");
-			return null;
-		}
-		long resID = getResID(cityCode, targetIP);
-		if (resID == 0) {
-			theLogger.error("resource id is empty!");
-			return null;
-		}
-		watchdogData.put("resID", resID);
+		
 		// 调用watchdog存储数据库方法，将数据存入数据库中
 		watchdogDBStorage(watchdogData);
 		return watchdogData;
@@ -73,10 +60,7 @@ public class WatchDogStorage implements IDataProcessChain {
 	 * @param targetIP
 	 * @return
 	 */
-	private long getResID(String cityCode, String targetIP) {
-		IResourceDao resDao = new ResDao();
-		return resDao.ResIDQuery(cityCode, targetIP);
-	}
+	
 
 	@Override
 	public void setChainID(int chainID) {

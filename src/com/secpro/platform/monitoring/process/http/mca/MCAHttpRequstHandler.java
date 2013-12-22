@@ -44,9 +44,9 @@ public class MCAHttpRequstHandler implements IHttpRequestHandler {
 
 	@Override
 	public Object PUT(HttpRequest request, Object messageObj) throws Exception {
-		String cityCode = request.getHeader(CITY_CODE_PROPERTY_NAME);
-		if (Assert.isEmptyString(cityCode) || messageObj == null) {
-			theLogger.debug("city code or messages are empty!");
+		String region = request.getHeader(CITY_CODE_PROPERTY_NAME);
+		if (Assert.isEmptyString(region) || messageObj == null) {
+			theLogger.debug("the region or messages are empty!");
 			return "";
 		}
 		ProcessChainService processChainService = ServiceHelper
@@ -54,7 +54,7 @@ public class MCAHttpRequstHandler implements IHttpRequestHandler {
 		if (processChainService == null) {
 			throw new PlatformException("Can't find the ProcessChainService!");
 		} else {
-			processChainService.dataProcess(messageObj,cityCode);
+			processChainService.dataProcess(messageObj,region);
 		}
 		return "OK";
 	}

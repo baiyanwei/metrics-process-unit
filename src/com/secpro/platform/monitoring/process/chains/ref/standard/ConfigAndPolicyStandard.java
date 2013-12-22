@@ -31,11 +31,10 @@ public class ConfigAndPolicyStandard {
 	// 规则分隔符，以及标准化结果行分隔符
 	private final String splitter = "%%";
 
-	public ConfigAndPolicyStandard(String values, String rules,
-			String cityCode, String targetIP) {
+	public ConfigAndPolicyStandard(String values, String rules,long resID) {
 		this.values = values;
 		this.standardRules = rules;
-		loadPredefinedService(cityCode, targetIP);
+		loadPredefinedService(resID);
 		initRules();
 	}
 
@@ -114,10 +113,9 @@ public class ConfigAndPolicyStandard {
 	 * 
 	 * @param typeCode
 	 */
-	private void loadPredefinedService(String cityCode, String targetIP) {
+	private void loadPredefinedService(long resID) {
 		IConfigAndPolicyDao configAndPolicyDao = new ConfigAndPolicyDao();
-		predefinedService = configAndPolicyDao.predefinedServiceQuery(cityCode,
-				targetIP);
+		predefinedService = configAndPolicyDao.predefinedServiceQuery(resID);
 
 	}
 

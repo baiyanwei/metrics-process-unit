@@ -1,9 +1,11 @@
 package com.secpro.platform.monitoring.process.dao.impl;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.secpro.platform.core.utils.Assert;
 import com.secpro.platform.log.utils.PlatformLogger;
 import com.secpro.platform.monitoring.process.dao.ITaskDao;
 import com.secpro.platform.monitoring.process.entity.TaskBean;
@@ -32,6 +34,32 @@ public class TaskDao implements ITaskDao {
 		} finally {
 			DBUtil.closeConnection(conn, statement);
 		}
+	}
+
+	@Override
+	public long resIDQuery(String taskID) {
+		if(Assert.isEmptyString(taskID)){
+			return 0;
+		}
+		Connection conn = DBUtil.getConnection();
+		Statement statement = null;
+		ResultSet result=null;
+		try {
+			statement = conn.createStatement();
+			String sql = "select res_id from msu_task where id='"+taskID+"'";
+			result=statement.executeQuery(sql);
+			if(result.next()){
+				return result.getLong(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			theLogger.exception(e);
+		} finally {
+			DBUtil.closeConnection(conn, statement,result);
+		}
+		return 0;
+		
 	}
 
 	

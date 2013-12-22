@@ -44,6 +44,10 @@ public class SyslogStandard implements IDataProcessChain {
 					.error("need type of ArrayList in syslog data processing.");
 			return null;
 		}
+		List<Map<String, Object>> syslogDatas = (List) rawData;
+		if(syslogDatas.size()==0){
+			return null;
+		}
 		SyslogStandardRuleService syslogRuleService = ServiceHelper
 				.findService(SyslogStandardRuleService.class);
 		if (syslogRuleService == null) {
@@ -58,21 +62,17 @@ public class SyslogStandard implements IDataProcessChain {
 					.debug("rule mapping is null,don't need standard the syslog data");
 			return rawData;
 		}
-		List<Map<String, Object>> syslogDatas = (List) rawData;
+		
 		List<Map<String, Object>> deleteList = new ArrayList();
 		for (Map<String, Object> syslogData : syslogDatas) {
 
-			String cityCode = (String) syslogData
-					.get(MetaDataConstant.CITY_CODE);
-			String targetIP = (String) syslogData
-					.get(MetaDataConstant.TARGET_IP);
-			if (Assert.isEmptyString(cityCode)
-					|| Assert.isEmptyString(targetIP)) {
+			long resID = (Long) syslogData.get(MetaDataConstant.RESOURCE_ID);
+			if (resID==0L) {
 				deleteList.add(syslogData);
-				theLogger.error("city code or target IP is empty!");
+				theLogger.error("res id is empty!");
 				continue;
 			}
-			String typeCode = getTypeCode(cityCode, targetIP);
+			String typeCode = getTypeCode(resID);
 			if (Assert.isEmptyString(typeCode)) {
 				deleteList.add(syslogData);
 				theLogger.error("type code is empty!");
@@ -186,9 +186,9 @@ public class SyslogStandard implements IDataProcessChain {
 	 * @param targetIP
 	 * @return
 	 */
-	private String getTypeCode(String cityCode, String targetIP) {
+	private String getTypeCode(long resID) {
 		IResourceDao resDao = new ResDao();
-		return resDao.typeCodeQuery(cityCode, targetIP);
+		return resDao.typeCodeQuery(resID);
 	}
 
 	@Override

@@ -54,7 +54,7 @@ public class SNMPDBStorageAdapter extends DBStorage {
 			theLogger.debug("the execute results of snmp data are empty!");
 			return;
 		}
-		long resID = (Long) snmpData.get("resID");
+		long resID = (Long) snmpData.get(MetaDataConstant.RESOURCE_ID);
 		if(resID==0l){
 			return;
 		}

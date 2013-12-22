@@ -7,6 +7,7 @@ import java.util.Set;
 import com.secpro.platform.log.utils.PlatformLogger;
 import com.secpro.platform.monitoring.process.chains.IDataProcessChain;
 import com.secpro.platform.monitoring.process.chains.ref.event.EventAndAlarm;
+import com.secpro.platform.monitoring.process.chains.ref.event.EventTypeNameConstant;
 import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataConstant;
 /**
  * 产生与恢复事件，告警信息等
@@ -40,13 +41,14 @@ public class WatchDogEvent implements IDataProcessChain {
 			return null;
 		}
 		Set<String> resultKeys = watchdogResult.keySet();
-		long resID = (Long) watchdogData.get("resID");
+		long resID = (Long) watchdogData.get(MetaDataConstant.RESOURCE_ID);
 		for (String resultName : resultKeys) {
 			String value = watchdogResult.get(resultName);
 			// 判断是否会产生事件以及恢复事件等
 			EventAndAlarm.JudgeGenerateAndRecoveryEvent(resID, resultName,
 					value);
 		}
+		EventAndAlarm.isRecoveryEvent(resID, EventTypeNameConstant.EVENT_TYEP_NAME_MCA_ERROR);
 		return watchdogData;
 	}
 

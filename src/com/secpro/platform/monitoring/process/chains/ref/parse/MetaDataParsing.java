@@ -115,10 +115,12 @@ public class MetaDataParsing {
 					.getString(MetaDataConstant.META_EXECUTE_AT_PROPERTY_NAME));
 			reletedData.put(MetaDataConstant.CITY_CODE, data
 					.getString(MetaDataConstant.META_CITYCODE_PROPERTY_NAME));
-			reletedData.put(MetaDataConstant.TASK_CODE, data
-					.getString(MetaDataConstant.META_MONITOR_ID_PROPERTY_NAME));
-			reletedData.put(MetaDataConstant.TARGET_IP, data
-					.getString(MetaDataConstant.META_TARGETIP_PROPERTY_NAME));
+			reletedData.put(MetaDataConstant.SCHEDULE_ID, data
+					.getString(MetaDataConstant.META_SCHEDULE_ID_PROPERTY_NAME));
+			reletedData.put(MetaDataConstant.TASK_ID, data
+					.getString(MetaDataConstant.META_TASK_ID_PROPERTY_NAME));
+//			reletedData.put(MetaDataConstant.TARGET_IP, data
+//					.getString(MetaDataConstant.META_TARGETIP_PROPERTY_NAME));
 			reletedData
 					.put(MetaDataConstant.EXECUTE_COST,
 							data.getString(MetaDataConstant.META_EXECUTE_COST_PROPERTY_NAME));
@@ -149,10 +151,10 @@ public class MetaDataParsing {
 					.getString(MetaDataConstant.META_EXECUTE_AT_PROPERTY_NAME));
 			reletedData.put(MetaDataConstant.CITY_CODE, data
 					.getString(MetaDataConstant.META_CITYCODE_PROPERTY_NAME));
-			reletedData.put(MetaDataConstant.TASK_CODE, data
-					.getString(MetaDataConstant.META_MONITOR_ID_PROPERTY_NAME));
-			reletedData.put(MetaDataConstant.TARGET_IP, data
-					.getString(MetaDataConstant.META_TARGETIP_PROPERTY_NAME));
+			reletedData.put(MetaDataConstant.SCHEDULE_ID, data
+					.getString(MetaDataConstant.META_SCHEDULE_ID_PROPERTY_NAME));
+//			reletedData.put(MetaDataConstant.TARGET_IP, data
+//					.getString(MetaDataConstant.META_TARGETIP_PROPERTY_NAME));
 			reletedData
 					.put(MetaDataConstant.EXECUTE_COST,
 							data.getString(MetaDataConstant.META_EXECUTE_COST_PROPERTY_NAME));

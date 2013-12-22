@@ -11,5 +11,5 @@ public interface IDeviceDao {
 	 * @param resIP
 	 * @return
 	 */
-	public String typeNameQuery(String cityCode,String resIP);
+	public String typeNameQuery(long resID);
 }

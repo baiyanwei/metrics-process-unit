@@ -206,17 +206,19 @@ public class EventDao implements IEventDao, IEventMsgDao {
 	}
 
 	@Override
-	public void eventMessageUpdate(long eventID, String message) {
+	public void eventMessageUpdate(long eventID, String message,int eventLevel) {
 		if (eventID == 0 || Assert.isEmptyString(message)) {
 			return;
 		}
 		Connection conn = DBUtil.getConnection();
-		Statement statement = null;
+		PreparedStatement statement = null;
 		try {
-			statement = conn.createStatement();
-			String sql = "update sys_event set message='" + message
-					+ "' where id=" + eventID;
-			statement.execute(sql);
+			String sql = "update sys_event set message=?,event_level=? where id=?";
+			statement = conn.prepareStatement(sql);
+			statement.setString(1, message);
+			statement.setInt(2, eventLevel);
+			statement.setLong(3, eventID);
+			statement.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();

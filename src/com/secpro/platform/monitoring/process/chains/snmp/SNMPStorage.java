@@ -36,28 +36,12 @@ public class SNMPStorage implements IDataProcessChain {
 			return null;
 		}
 		Map<String, Object> snmpData = (Map<String, Object>) rawData;
-		String cityCode = (String) snmpData.get(MetaDataConstant.CITY_CODE);
-		String targetIP = (String) snmpData.get(MetaDataConstant.TARGET_IP);
-		if (Assert.isEmptyString(cityCode) || Assert.isEmptyString(targetIP)) {
-			theLogger.error("city code or target IP is empty!");
-			return null;
-		}
-		long resID = getResID(cityCode, targetIP);
-		if (resID == 0) {
-			theLogger.error("resource id of the snmp data is empty!");
-			return null;
-		}
-		snmpData.put("resID", resID);
 		// 调用snmp存储数据库方法，将数据存入数据库中
 		snmpDBStorage(snmpData);
 
 		return snmpData;
 	}
 
-	private long getResID(String cityCode, String targetIP) {
-		IResourceDao resDao = new ResDao();
-		return resDao.ResIDQuery(cityCode, targetIP);
-	}
 
 	private void snmpDBStorage(Object rawData) {
 		DBStorage dbStorage = new SNMPDBStorageAdapter(rawData);

@@ -239,7 +239,7 @@ public class ScanFWConfigurationFileService implements IService{
 
 	private long getResID(String cityCode, String targetIP) {
 		IResourceDao resDao=new ResDao();
-		return resDao.ResIDQuery(cityCode, targetIP);
+		return resDao.resIDQuery(cityCode, targetIP);
 	}
 
 	private void fwFileDBStorage(List<FWFileBean> fwFileBeans){

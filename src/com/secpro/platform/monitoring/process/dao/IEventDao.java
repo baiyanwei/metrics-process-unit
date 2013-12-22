@@ -40,7 +40,7 @@ public interface IEventDao {
 	 * @param eventID
 	 * @param message
 	 */
-	public void eventMessageUpdate(long eventID,String message);
+	public void eventMessageUpdate(long eventID,String message,int eventLevel);
 	/**
 	 * 恢复事件并存储历史事件
 	 * @param eventBean

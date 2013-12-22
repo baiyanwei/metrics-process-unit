@@ -46,9 +46,9 @@ public class SSHTelnetDBStorageAdapter extends DBStorage {
 					.debug("the execute results of ssh or telnet data are empty!");
 			return;
 		}
-		long resID = (Long) sshOrTelnetData.get("resID");
+		long resID = (Long) sshOrTelnetData.get(MetaDataConstant.RESOURCE_ID);
 		String taskCode = (String) sshOrTelnetData
-				.get(MetaDataConstant.TASK_CODE);
+				.get(MetaDataConstant.SCHEDULE_ID);
 		String cdate = DateFormatUtil.getNowDate();
 		StringBuilder configAndPolicyInfo = new StringBuilder();
 		if (Assert.isEmptyString(executeResult[0])) {

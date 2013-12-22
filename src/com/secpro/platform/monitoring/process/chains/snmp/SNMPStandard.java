@@ -56,10 +56,9 @@ public class SNMPStandard implements IDataProcessChain {
 		// .get(MetaDataConstant.EXECUTE_DATE);
 		// 更新任务状态
 		setTaskStatus(snmpData, TaskCompleted.TASK_SUCCESS);
-		String cityCode = (String) snmpData.get(MetaDataConstant.CITY_CODE);
-		String targetIP = (String) snmpData.get(MetaDataConstant.TARGET_IP);
-		if (Assert.isEmptyString(cityCode) || Assert.isEmptyString(targetIP)) {
-			theLogger.error("city code or target IP is empty.");
+		long resID = (Long) snmpData.get(MetaDataConstant.RESOURCE_ID);
+		if (resID==0L) {
+			theLogger.error("res id is empty.");
 			return null;
 		}
 		Map<String, String> resultMapping = (Map<String, String>) snmpData
@@ -69,8 +68,7 @@ public class SNMPStandard implements IDataProcessChain {
 			return null;
 		}
 		// 查询kpiID以及对应的标准化规则
-		Map<String, String[]> kpiIDAndRules = loadKpiIDAndRule(cityCode,
-				targetIP);
+		Map<String, String[]> kpiIDAndRules = loadKpiIDAndRule(resID);
 		if (kpiIDAndRules == null || kpiIDAndRules.size() == 0) {
 			theLogger.error("kpi id is empty.");
 			return null;
@@ -203,10 +201,9 @@ public class SNMPStandard implements IDataProcessChain {
 	 * @param targetIP
 	 * @return
 	 */
-	private Map<String, String[]> loadKpiIDAndRule(String cityCode,
-			String targetIP) {
+	private Map<String, String[]> loadKpiIDAndRule(long resID) {
 		IKpiDao kpiDao = new KpiDao();
-		return kpiDao.kpiIDAndRuleQuery(cityCode, targetIP);
+		return kpiDao.kpiIDAndRuleQuery(resID);
 	}
 
 	@Override

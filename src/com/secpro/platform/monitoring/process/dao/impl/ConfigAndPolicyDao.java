@@ -20,9 +20,8 @@ public class ConfigAndPolicyDao implements IConfigAndPolicyDao {
 			.getLogger(ConfigAndPolicyDao.class);
 
 	@Override
-	public Map<String, String> predefinedServiceQuery(String cityCode,
-			String targetIP) {
-		if (Assert.isEmptyString(cityCode) || Assert.isEmptyString(targetIP)) {
+	public Map<String, String> predefinedServiceQuery(long resID) {
+		if (resID==0L) {
 			return null;
 		}
 		Connection conn = DBUtil.getConnection();
@@ -30,11 +29,7 @@ public class ConfigAndPolicyDao implements IConfigAndPolicyDao {
 		ResultSet result = null;
 		try {
 			statement = conn.createStatement();
-			String sql = "select t1.service_name,t1.SERVICE_PROT_MAPPING from predefined_service t1,sys_res_obj t2 where t2.res_ip='"
-					+ targetIP
-					+ "' and t2.city_code='"
-					+ cityCode
-					+ "' and t1.type_code=t2.type_code";
+			String sql = "select t1.service_name,t1.SERVICE_PROT_MAPPING from predefined_service t1,sys_res_obj t2 where t2.id="+resID+" and t1.type_code=t2.type_code";
 			result = statement.executeQuery(sql);
 			Map<String, String> predefinedService = new HashMap<String, String>();
 			while (result.next()) {
@@ -55,8 +50,8 @@ public class ConfigAndPolicyDao implements IConfigAndPolicyDao {
 	}
 
 	@Override
-	public String standardRulePathQuery(String cityCode, String targetIP) {
-		if (Assert.isEmptyString(cityCode) || Assert.isEmptyString(targetIP)) {
+	public String standardRulePathQuery(long resID) {
+		if (resID==0L) {
 			return null;
 		}
 		Connection conn = DBUtil.getConnection();
@@ -64,11 +59,7 @@ public class ConfigAndPolicyDao implements IConfigAndPolicyDao {
 		ResultSet result = null;
 		try {
 			statement = conn.createStatement();
-			String sql = "select t1.STANDARD_RULE_PATH from config_policy_rule t1,sys_res_obj t2 where t2.res_ip='"
-					+ targetIP
-					+ "' and t2.city_code='"
-					+ cityCode
-					+ "' and t1.type_code=t2.type_code";
+			String sql = "select t1.STANDARD_RULE from config_policy_rule t1,sys_res_obj t2 where t2.id="+resID+" and t1.type_code=t2.type_code";
 			result = statement.executeQuery(sql);
 			if (result.next()) {
 
@@ -113,8 +104,8 @@ public class ConfigAndPolicyDao implements IConfigAndPolicyDao {
 	}
 
 	@Override
-	public String containAndConflictRuleQuery(String cityCode, String targetIP) {
-		if (Assert.isEmptyString(cityCode) || Assert.isEmptyString(targetIP)) {
+	public String containAndConflictRuleQuery(long resID) {
+		if (resID==0L) {
 			return null;
 		}
 		Connection conn = DBUtil.getConnection();
@@ -122,11 +113,7 @@ public class ConfigAndPolicyDao implements IConfigAndPolicyDao {
 		ResultSet result = null;
 		try {
 			statement = conn.createStatement();
-			String sql = "select t1.contain_conflict_rule from config_policy_rule t1,sys_res_obj t2 where t2.res_ip='"
-					+ targetIP
-					+ "' and t2.city_code='"
-					+ cityCode
-					+ "' and t1.type_code=t2.type_code";
+			String sql = "select t1.contain_conflict_rule from config_policy_rule t1,sys_res_obj t2 where t2.id="+resID+" and t1.type_code=t2.type_code";
 			result = statement.executeQuery(sql);
 			if (result.next()) {
 

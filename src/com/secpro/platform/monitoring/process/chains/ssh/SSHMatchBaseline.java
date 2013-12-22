@@ -57,19 +57,19 @@ public class SSHMatchBaseline implements IDataProcessChain {
 			return null;
 		}
 		Map sshData = (Map) rawData;
-		long resID = (Long) sshData.get("resID");
+		long resID = (Long) sshData.get(MetaDataConstant.RESOURCE_ID);
 		if (resID == 0) {
 			theLogger.error("resource id is empty!");
 			return null;
 		}
 		// 查询应符合的基线以及与基线比对的规则
 		List<BaselineBean> baselineValues = getBaselineAndRule(resID);
-		if (baselineValues == null) {
+		if (Assert.isEmptyCollection(baselineValues)) {
 			theLogger.debug("This model does not set the baseline");
 		} else {
 			List<BaselineMatchBean> matchValues = new ArrayList<BaselineMatchBean>();
 			String cdate = DateFormatUtil.getNowDate();
-			String taskCode = (String) sshData.get(MetaDataConstant.TASK_CODE);
+			String taskCode = (String) sshData.get(MetaDataConstant.SCHEDULE_ID);
 			String[] executeResult = (String[]) sshData
 					.get(MetaDataConstant.EXECUTE_RESULT);
 			int totalScore = 0;

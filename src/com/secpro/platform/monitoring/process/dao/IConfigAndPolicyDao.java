@@ -12,18 +12,14 @@ import com.secpro.platform.monitoring.process.entity.ContainAndConflictBean;
 public interface IConfigAndPolicyDao {
 	/**
 	 * 查询策略信息中预定义服务
-	 * @param cityCode
-	 * @param targetIP
 	 * @return
 	 */
-	public Map<String,String> predefinedServiceQuery(String cityCode,String targetIP);
+	public Map<String,String> predefinedServiceQuery(long resID);
 	/**
 	 * 查询策略和配置信息标准化规则路径
-	 * @param cityCode
-	 * @param targetIP
 	 * @return
 	 */
-	public String standardRulePathQuery(String cityCode,String targetIP);
+	public String standardRulePathQuery(long resID);
 	/**
 	 * 标准化后的策略配置信息存储
 	 * @param configAndPolicyBean
@@ -31,11 +27,9 @@ public interface IConfigAndPolicyDao {
 	public void configAndPolicySave(ConfigAndPolicyBean configAndPolicyBean);
 	/**
 	 * 查询包含与冲突检查规则
-	 * @param cityCode
-	 * @param targetIP
 	 * @return
 	 */
-	public String containAndConflictRuleQuery(String cityCode,String targetIP);
+	public String containAndConflictRuleQuery(long resID);
 	/**
 	 * 冲突与包含检查结果存储
 	 * @param containAndConflictBean

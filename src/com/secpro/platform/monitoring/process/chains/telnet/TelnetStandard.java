@@ -48,10 +48,9 @@ public class TelnetStandard implements IDataProcessChain {
 		// executeDate=(String)telnetData.get(MetaDataConstant.EXECUTE_DATE);
 		// 更新任务状态
 		setTaskStatus(telnetData, TaskCompleted.TASK_SUCCESS);
-		String cityCode = (String) telnetData.get(MetaDataConstant.CITY_CODE);
-		String targetIP = (String) telnetData.get(MetaDataConstant.TARGET_IP);
-		if (Assert.isEmptyString(cityCode) || Assert.isEmptyString(targetIP)) {
-			theLogger.error("city code or target IP is empty.");
+		long resID = (Long) telnetData.get(MetaDataConstant.RESOURCE_ID);
+		if (resID==0L) {
+			theLogger.error("res id is empty.");
 			return null;
 		}
 		String excuteResult = (String) telnetData
@@ -60,13 +59,13 @@ public class TelnetStandard implements IDataProcessChain {
 			theLogger.error("the excute result is empty");
 			return null;
 		}
-		String rules = loadConfigAndPolicyRule(cityCode, targetIP);
+		String rules = loadConfigAndPolicyRule(resID);
 		if (Assert.isEmptyString(rules)) {
 			theLogger.debug("the standard rules are empty");
 			return null;
 		}
 		ConfigAndPolicyStandard config = new ConfigAndPolicyStandard(
-				excuteResult, rules, cityCode, targetIP);
+				excuteResult, rules, resID);
 		String[] result = config.configAndPolicyStandard();
 		if (result == null) {
 			theLogger.error("the standard data of telnet are empty!");
@@ -83,11 +82,9 @@ public class TelnetStandard implements IDataProcessChain {
 	 * @param targetIP
 	 * @return
 	 */
-	private String loadConfigAndPolicyRule(String cityCode, String targetIP) {
+	private String loadConfigAndPolicyRule(long resID) {
 		IConfigAndPolicyDao configAndPolicyDao = new ConfigAndPolicyDao();
-		String rulePath = configAndPolicyDao.standardRulePathQuery(cityCode,
-				targetIP);
-		return ReadRuleFile.readRule(rulePath);
+		return configAndPolicyDao.standardRulePathQuery(resID);
 
 	}
 

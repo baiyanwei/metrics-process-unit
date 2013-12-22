@@ -11,18 +11,19 @@ public interface IResourceDao {
 	 * @param resIP
 	 * @return
 	 */
-	public String typeCodeQuery(String cityCode,String resIP);
+	public String typeCodeQuery(long resID);
 	/**
 	 * 查询resID资源ID
 	 * @param cityCode
 	 * @param resIP
 	 * @return
 	 */
-	public long ResIDQuery(String cityCode,String resIP);
+	public long resIDQuery(String cityCode,String resIP);
 	/**
 	 * 资源启停状态查询
 	 * @param resID
 	 * @return
 	 */
 	public String resPausedQuery(long resID);
+	public long resIDQueryByTaskRegion(String taskRegion,String resIP);
 }

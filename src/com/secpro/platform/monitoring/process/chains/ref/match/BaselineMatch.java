@@ -116,7 +116,7 @@ public class BaselineMatch {
 
 										}
 										if (match == true) {
-											return configValue[i];
+											return mat.group();
 										}
 									}
 								}
@@ -146,7 +146,7 @@ public class BaselineMatch {
 				|| Assert.isEmptyString(matchValue)) {
 			return false;
 		}
-		String floatRegex = "[0-9]+.?[0-9]+";
+		String floatRegex = "[0-9]+.?[0-9]*";
 		boolean valueIsFloat = value.matches(floatRegex);
 		boolean thresholdIsFloat = matchValue.matches(floatRegex);
 

@@ -22,8 +22,8 @@ import com.secpro.platform.monitoring.process.utils.DBUtil;
 public class KpiDao implements IKpiDao{
 	private static PlatformLogger theLogger = PlatformLogger.getLogger(KpiDao.class);
 	@Override
-	public Map<String, String[]> kpiIDAndRuleQuery(String cityCode, String resIP) {
-		if(Assert.isEmptyString(cityCode)||Assert.isEmptyString(resIP)){
+	public Map<String, String[]> kpiIDAndRuleQuery(long resID) {
+		if(resID==0L){
 			return null;
 		}
 		Connection conn = DBUtil.getConnection();
@@ -31,7 +31,7 @@ public class KpiDao implements IKpiDao{
 		ResultSet result=null;
 		try {
 			statement = conn.createStatement();
-			String sql = "select t1.miboid,t1.kpi_id,t1.rule from sys_kpi_oid t1,sys_res_obj t2 where city_code='"+cityCode+"' and res_ip='"+resIP+"' and t1.type_code=t2.type_code";
+			String sql = "select t1.miboid,t1.kpi_id,t1.rule from sys_kpi_oid t1,sys_res_obj t2 where t2.id="+resID+" and t1.type_code=t2.type_code";
 			result=statement.executeQuery(sql);
 			Map<String,String[]> kpiIDAndRuleMapping=new HashMap<String,String[]>();
 			while(result.next()){
