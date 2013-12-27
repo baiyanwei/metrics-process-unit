@@ -51,10 +51,10 @@ public class SSHTelnetDBStorageAdapter extends DBStorage {
 				.get(MetaDataConstant.SCHEDULE_ID);
 		String cdate = DateFormatUtil.getNowDate();
 		StringBuilder configAndPolicyInfo = new StringBuilder();
-		if (Assert.isEmptyString(executeResult[0])) {
+		if (Assert.isEmptyString(executeResult[2])) {
 			configAndPolicyInfo.append("#configuration##configuration#");
 		} else {
-			configAndPolicyInfo.append("#configuration#" + executeResult[0]
+			configAndPolicyInfo.append("#configuration#" + executeResult[2]
 					+ "#configuration#");
 		}
 		if (Assert.isEmptyString(executeResult[1])) {

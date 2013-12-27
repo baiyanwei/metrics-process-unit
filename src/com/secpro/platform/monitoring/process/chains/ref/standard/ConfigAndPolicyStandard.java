@@ -22,6 +22,7 @@ public class ConfigAndPolicyStandard {
 	private static PlatformLogger theLogger = PlatformLogger
 			.getLogger(ConfigAndPolicyStandard.class);
 	private String values;
+	private String originValues;
 	private String standardRules;
 	private Map<String, String> initRules = new HashMap<String, String>();
 	private String configRules;
@@ -32,7 +33,8 @@ public class ConfigAndPolicyStandard {
 	private final String splitter = "%%";
 
 	public ConfigAndPolicyStandard(String values, String rules,long resID) {
-		this.values = values;
+		this.originValues = values;
+		this.values=values;
 		this.standardRules = rules;
 		loadPredefinedService(resID);
 		initRules();
@@ -46,20 +48,29 @@ public class ConfigAndPolicyStandard {
 			return;
 		}
 		// 得到配置信息标准化脚本
-		String configRulesRegex = "#configuration#(.*?)#configuration#";
+		String configRulesRegex = "#configuration#([\\s\\S]*)#configuration#";
 		Pattern pattern = Pattern.compile(configRulesRegex);
 		Matcher mat = pattern.matcher(standardRules);
 		if (mat.find()) {
 			configRules = mat.group(1);
 		}
 		// 得到策略信息标准化脚本
-		String policyRulesRegex = "#policy#(.*?)#policy#";
+		String policyRulesRegex = "#policy#([\\s\\S]*)#policy#";
 		pattern = Pattern.compile(policyRulesRegex);
 		mat = pattern.matcher(standardRules);
 		if (mat.find()) {
 			policyRules = mat.group(1);
 		}
-		String allRuleRegex = "#allRule#(.*?)#allRule#";
+		String formatRuleRegex="#formatRule#([\\s\\S]*)#formatRule#";
+		pattern = Pattern.compile(formatRuleRegex);
+		mat = pattern.matcher(standardRules);
+		if(mat.find()){
+			String formatRule=mat.group(1);
+			if(!Assert.isEmptyString(formatRule)){
+				formatStandard(formatRule);
+			}
+		}
+		String allRuleRegex = "#allRule#([\\s\\S]*)#allRule#";
 		pattern = Pattern.compile(allRuleRegex);
 		mat = pattern.matcher(standardRules);
 		if (mat.find()) {
@@ -73,8 +84,9 @@ public class ConfigAndPolicyStandard {
 				}
 			}
 		}
+		
 		// 得到初始化参数
-		String initRegex = "#init#(.*?)#init#";
+		String initRegex = "#init#([\\s\\S]*)#init#";
 		String initInfo = "";
 		pattern = Pattern.compile(initRegex);
 		mat = pattern.matcher(standardRules);
@@ -108,6 +120,73 @@ public class ConfigAndPolicyStandard {
 
 	}
 
+	private void formatStandard(String formatRule) {
+		if(Assert.isEmptyString(formatRule)){
+			return;
+		}
+		String[] rules=formatRule.split(splitter);
+		String formatValues=originValues;
+		for(int i=0;i<rules.length;i++){
+			if(Assert.isEmptyString(rules[i])){
+				continue;
+			}
+			String actionType = StandardUtil.isCustomActionType(rules[i]);
+			if (actionType == null) {
+				continue;
+			} else {
+				rules[i] = StandardUtil.removeCustomAction(rules[i]);
+				if("H".equals(actionType)){
+					this.originValues=formatValues;
+				}else if("N".equals(actionType)){
+					formatValues=newLineStandard(rules[i],formatValues);
+				}else if("A".equals(actionType)){
+					formatValues=throwStandard(rules[i],formatValues,1);
+				}else if("B".equals(actionType)){
+					formatValues=throwStandard(rules[i],formatValues,2);
+				}else if("T".equals(actionType)){
+					formatValues=throwStandard(rules[i],formatValues,0);
+				}else{
+					continue;
+				}
+			}
+		}
+		this.values=formatValues;
+	}
+
+	private String throwStandard(String rule, String values, int flag) {
+		if(Assert.isEmptyString(rule)||Assert.isEmptyString(values)){
+			return values;
+		}
+		
+		if(flag==0){
+			return values.replaceAll(rule, "");
+		}else if(flag==1){
+			Pattern pattern = Pattern.compile(rule);
+			Matcher mat = pattern.matcher(values);
+			if (mat.find()) {
+				return values.substring(0,mat.start());
+			}
+		}else if(flag==2){
+			Pattern pattern = Pattern.compile(rule);
+			Matcher mat = pattern.matcher(values);
+			if (mat.find()) {
+				return values.substring(mat.end(), values.length());
+			}
+		}else{
+			return values;
+		}
+		return values;
+	}
+	
+
+	private String newLineStandard(String rule,String values) {
+		if(Assert.isEmptyString(rule)||Assert.isEmptyString(values)){
+			return values;
+		}
+		
+		return values.replaceAll(rule, "");
+	}
+
 	/**
 	 * 根据防火墙类型编码，加载数据库中对应防火墙的预定义服务
 	 * 
@@ -120,7 +199,7 @@ public class ConfigAndPolicyStandard {
 	}
 
 	/**
-	 * 标准化采集回来的防火墙配置信息 返回值[0]为标准化后的配置信息 返回值[1]为标准化的策略信息
+	 * 标准化采集回来的防火墙配置信息 返回值[0]为标准化后的配置信息 返回值[1]为标准化的策略信息 [2]为经过格式标准化后的整个配置信息
 	 * 
 	 * @return
 	 */
@@ -128,17 +207,15 @@ public class ConfigAndPolicyStandard {
 		if (Assert.isEmptyString(values) || Assert.isEmptyString(standardRules)) {
 			return null;
 		}
-		String[] configAndPolicyResult = new String[2];
-		if (Assert.isEmptyString(configRules)) {
-			configAndPolicyResult[0] = null;
-		} else {
+		String[] configAndPolicyResult = new String[3];
+		if (!Assert.isEmptyString(configRules)) {
+		
 			configAndPolicyResult[0] = configStandard();
 		}
-		if (Assert.isEmptyString(policyRules)) {
-			configAndPolicyResult[1] = null;
-		} else {
+		if (!Assert.isEmptyString(policyRules)) {
 			configAndPolicyResult[1] = policyStandard();
 		}
+		configAndPolicyResult[2]=originValues;
 		return configAndPolicyResult;
 	}
 

@@ -226,19 +226,44 @@ public class BaselineMatch {
 			theLogger.debug("action type of the policy rule is empty");
 		} else {
 			if ("V".equals(actionType)) {
-
-				String baselineValue = StandardUtil
-						.removeCustomAction(oneRule[0]);
-				for (int i = 0; i < policyValue.length; i++) {
-					int matchResultFlag = PolicyMatchUtil.matchTwoValue(
-							policyValue[i], baselineValue, oneRule[1]);
-					if (matchResultFlag == 1) {
-						String valueAfter = PolicyMatchUtil.getNameValue(
-								policyValue[i], StandardConstant.ORIGIN_NAME);
-						if (!Assert.isEmptyString(valueAfter)) {
-							return valueAfter;
+				String baselineValue = StandardUtil.removeCustomAction(oneRule[0]);
+				if(!Assert.isEmptyString(oneRule[1])){
+					int location;
+					if((location=getMatchLocation(oneRule[1]))!=0){
+						String matchRule=removeMatchLocation(oneRule[1]);
+						if(location>0){
+							if(location<=policyValue.length){
+								int matchResultFlag = PolicyMatchUtil.matchTwoValue(policyValue[location-1], baselineValue, matchRule);
+								if (matchResultFlag == 1) {
+									String valueAfter = PolicyMatchUtil.getNameValue(policyValue[location-1], StandardConstant.ORIGIN_NAME);
+									if (!Assert.isEmptyString(valueAfter)) {
+										return valueAfter;
+									}
+								}
+							}
+						}else {
+							if(Math.abs(location)<=policyValue.length){
+								int matchResultFlag = PolicyMatchUtil.matchTwoValue(policyValue[policyValue.length+location], baselineValue, matchRule);
+								if (matchResultFlag == 1) {
+									String valueAfter = PolicyMatchUtil.getNameValue(policyValue[policyValue.length+location], StandardConstant.ORIGIN_NAME);
+									if (!Assert.isEmptyString(valueAfter)) {
+										return valueAfter;
+									}
+								}
+							}
 						}
+					}else{
+						for (int i = 0; i < policyValue.length; i++) {
+							int matchResultFlag = PolicyMatchUtil.matchTwoValue(
+									policyValue[i], baselineValue, oneRule[1]);
+							if (matchResultFlag == 1) {
+								String valueAfter = PolicyMatchUtil.getNameValue(policyValue[i], StandardConstant.ORIGIN_NAME);
+								if (!Assert.isEmptyString(valueAfter)) {
+									return valueAfter;
+								}
 
+							}
+						}
 					}
 				}
 			}
@@ -246,4 +271,27 @@ public class BaselineMatch {
 
 		return null;
 	}
+
+	private static String removeMatchLocation(String matchRule) {
+		if(Assert.isEmptyString(matchRule)){
+			return null;
+		}
+		
+		return matchRule.replaceFirst("#([-]?\\d+)#", "");
+	}
+
+	private static int getMatchLocation(String matchRule) {
+		if(Assert.isEmptyString(matchRule)){
+			return 0;
+		}
+		String locationRegex="#([-]?\\d+)#";
+		Pattern patt=Pattern.compile(locationRegex);
+		Matcher mat = patt.matcher(matchRule);
+		if(mat.find()){
+			String location= mat.group(1);
+			return Integer.valueOf(location);
+		}
+		return 0;
+	}
+	
 }

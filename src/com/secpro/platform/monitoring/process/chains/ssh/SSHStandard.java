@@ -67,9 +67,7 @@ public class SSHStandard implements IDataProcessChain {
 		ConfigAndPolicyStandard config = new ConfigAndPolicyStandard(
 				excuteResult, rules, resID);
 		String[] result = config.configAndPolicyStandard();
-		if (result == null
-				|| (Assert.isEmptyString(result[0]) && Assert
-						.isEmptyString(result[1]))) {
+		if (result == null) {
 			theLogger.error("the standard data of ssh are empty!");
 			return null;
 		}

@@ -72,10 +72,9 @@ public class SSHStorageAndMatch implements IDataProcessChain {
 		sshData.put(MetaDataConstant.SCHEDULE_ID, taskCode);
 		// 调用ssh存储数据库方法，将数据存入数据库中
 		sshDBStorage(sshData);
+		//sshData.put(MetaDataConstant.EXECUTE_RESULT, new String[]{sshStandardResult[0],sshStandardResult[1]});
 		// 对标准化后的策略信息进行包含和冲突检查，并根据结果判断事件的产生与恢复
-		String[] containAndConflictResult = policyContainAndConflict(
-				sshStandardResult[1],
-				loadContainAndConflictRule(resID));
+		String[] containAndConflictResult = policyContainAndConflict(sshStandardResult[1],loadContainAndConflictRule(resID));
 		if (containAndConflictResult != null) {
 			if (!Assert.isEmptyString(containAndConflictResult[0])) {
 				EventAndAlarm.JudgeGenerateAndRecoveryEvent(resID,

@@ -65,6 +65,7 @@ public class TelnetStorageAndMatch implements IDataProcessChain {
 		telnetData.put(MetaDataConstant.SCHEDULE_ID, taskCode);
 		// 调用telnet存储数据库方法，将数据存入数据库中
 		telnetDBStorage(telnetData);
+		//telnetData.put(MetaDataConstant.EXECUTE_RESULT, new String[]{telnetStandardResult[0],telnetStandardResult[1]});
 		String[] containAndConflictResult = policyContainAndConflict(
 				telnetStandardResult[1],
 				loadContainAndConflictRule(resID));
