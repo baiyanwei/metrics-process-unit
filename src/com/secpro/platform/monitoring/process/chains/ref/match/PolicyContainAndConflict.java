@@ -21,6 +21,7 @@ public class PolicyContainAndConflict {
 	private String containRules;
 	private String conflictRules;
 	private String splitter = "%%";
+	private String inlineSplitter="::";
 	private static final String FORMER_NAME = "former";
 	private static final String LATTER_NAME = "latter";
 	private static final String ALL_NAME = "all";
@@ -202,10 +203,10 @@ public class PolicyContainAndConflict {
 						if (Assert.isEmptyString(valueBefore)) {
 							break;
 						}
-						result.append(valueBefore + "::" + valueAfter);
+						result.append(valueBefore + inlineSplitter + valueAfter);
 						valueBeforeFlag = 1;
 					} else {
-						result.append("::" + valueAfter);
+						result.append(inlineSplitter + valueAfter);
 					}
 				}
 			}
@@ -248,10 +249,10 @@ public class PolicyContainAndConflict {
 						if (Assert.isEmptyString(valueBefore)) {
 							break;
 						}
-						result.append(valueBefore + "::" + valueAfter);
+						result.append(valueBefore + inlineSplitter + valueAfter);
 						valueBeforeFlag = 1;
 					} else {
-						result.append("::" + valueAfter);
+						result.append(inlineSplitter + valueAfter);
 					}
 				}
 			}
@@ -294,10 +295,10 @@ public class PolicyContainAndConflict {
 						if (Assert.isEmptyString(valueBefore)) {
 							break;
 						}
-						result.append(valueBefore + "::" + valueAfter);
+						result.append(valueBefore + inlineSplitter + valueAfter);
 						valueBeforeFlag = 1;
 					} else {
-						result.append("::" + valueAfter);
+						result.append(inlineSplitter + valueAfter);
 					}
 				}
 			}

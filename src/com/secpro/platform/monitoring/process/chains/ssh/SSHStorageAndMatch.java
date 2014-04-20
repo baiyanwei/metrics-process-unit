@@ -12,6 +12,7 @@ import com.secpro.platform.monitoring.process.chains.ref.db.storage.SSHTelnetDBS
 import com.secpro.platform.monitoring.process.chains.ref.event.EventAndAlarm;
 import com.secpro.platform.monitoring.process.chains.ref.event.EventTypeNameConstant;
 import com.secpro.platform.monitoring.process.chains.ref.match.PolicyContainAndConflict;
+import com.secpro.platform.monitoring.process.chains.ref.other.DataFormatConversion;
 import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataConstant;
 import com.secpro.platform.monitoring.process.chains.ref.parse.MetaDataParsing;
 import com.secpro.platform.monitoring.process.dao.IConfigAndPolicyDao;
@@ -79,7 +80,7 @@ public class SSHStorageAndMatch implements IDataProcessChain {
 			if (!Assert.isEmptyString(containAndConflictResult[0])) {
 				EventAndAlarm.JudgeGenerateAndRecoveryEvent(resID,
 						EventTypeNameConstant.EVENT_TYEP_NAME_POLICY_CONTAIN,
-						containAndConflictResult[0]);
+						DataFormatConversion.conversion(containAndConflictResult[0], DataFormatConversion.CONTAIN_PROPERTY_NAME));
 			} else {
 				EventAndAlarm.isRecoveryEvent(resID,
 						EventTypeNameConstant.EVENT_TYEP_NAME_POLICY_CONTAIN);
@@ -87,7 +88,7 @@ public class SSHStorageAndMatch implements IDataProcessChain {
 			if (!Assert.isEmptyString(containAndConflictResult[1])) {
 				EventAndAlarm.JudgeGenerateAndRecoveryEvent(resID,
 						EventTypeNameConstant.EVENT_TYEP_NAME_POLICY_CONFLICT,
-						containAndConflictResult[1]);
+						DataFormatConversion.conversion(containAndConflictResult[1], DataFormatConversion.CONFLICT_PROPERTY_NAME));
 			} else {
 				EventAndAlarm.isRecoveryEvent(resID,
 						EventTypeNameConstant.EVENT_TYEP_NAME_POLICY_CONFLICT);
